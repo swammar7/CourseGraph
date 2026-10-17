@@ -31,4 +31,4 @@ CourseGraph evolves from the earlier prototype [MelisaZS/pdf-ai-query](https://g
 - `proposal/` course proposal files (Proposal Workbench)
 
 ## Status
-Proposal stage. Milestones: graph and shapes (31 Oct), cited answers (21 Nov), web page and report (5 Dec), release v1.0.0 (19 Dec).
+Proposal stage. Milestones: graph and shapes (31 Oct), cited answers (20 Nov), web page and report (4 Dec), release v1.0.0 (6 Dec).
