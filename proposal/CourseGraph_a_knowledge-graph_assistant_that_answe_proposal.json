@@ -1,0 +1,723 @@
+{
+ "tool": "proposal_tool",
+ "version": "4.11.0",
+ "stage": "proposal",
+ "stageLabel": "Proposal",
+ "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
+ "saved": "2026-10-17T18:01:35.168Z",
+ "proposal": {
+  "course": "SEN0414",
+  "semester": "2026-2027 Fall",
+  "tech": [
+   "RDFLibPython",
+   "PySHACLLib",
+   "SHACLCore",
+   "SPARQLFamily",
+   "SKOSVocabularyModel",
+   "PROVOStandard",
+   "GraphRAGPattern"
+  ],
+  "stage": "proposal",
+  "projectKinds": [
+   "PK_Search",
+   "PK_GraphRAG"
+  ],
+  "modules": [
+   {
+    "name": "PDF ingestion and graph builder",
+    "kind": "module",
+    "what": "Reads uploaded PDFs, splits them into pages and chunks, and writes them to the RDF graph with their embeddings",
+    "owner": "Ahmet Celal Koç",
+    "second": "Melisa Zeynep Sarıgüzel"
+   },
+   {
+    "name": "Course ontology and SHACL shapes",
+    "kind": "module",
+    "what": "The document, page, chunk and topic model, the SKOS topic scheme and the shapes every uploaded file must pass",
+    "owner": "Ahmet Celal Koç",
+    "second": "M. Ammar Cashlan"
+   },
+   {
+    "name": "Hybrid retriever and answer service",
+    "kind": "module",
+    "what": "Filters chunks with SPARQL, ranks them by embedding similarity, asks the local LLM for an answer and attaches page citations",
+    "owner": "Melisa Zeynep Sarıgüzel",
+    "second": "Ahmet Celal Koç"
+   },
+   {
+    "name": "Quality report and evaluation set",
+    "kind": "feature",
+    "what": "The 50-question evaluation set and the /report page with Recall@3, citation accuracy and answer time",
+    "owner": "Melisa Zeynep Sarıgüzel",
+    "second": "M. Ammar Cashlan"
+   },
+   {
+    "name": "Student web interface",
+    "kind": "feature",
+    "what": "The single Flask page to upload PDFs, choose a course, ask a question and open each cited page",
+    "owner": "M. Ammar Cashlan",
+    "second": "Melisa Zeynep Sarıgüzel"
+   },
+   {
+    "kind": "module",
+    "what": "pytest cases for every story and the GitHub Actions workflow that runs them and the SHACL check on every push",
+    "owner": "M. Ammar Cashlan",
+    "second": "Ahmet Celal Koç"
+   }
+  ],
+  "repo": "https://github.com/swammar7/PDF-AI-Query-PDF-Sorgulama-Sistemi",
+  "team": [
+   {
+    "name": "Melisa Zeynep Sarıgüzel",
+    "no": "2300008095",
+    "email": "2300008095@stu.iku.edu.tr",
+    "share": "34",
+    "admin": [
+     "A_TeamLead",
+     "A_CustomerLiaison",
+     "A_DocLead",
+     "A_QualityLead"
+    ],
+    "dev": [
+     "R_Analyst",
+     "R_AI"
+    ]
+   },
+   {
+    "name": "Ahmet Celal Koç",
+    "no": "2200005171",
+    "email": "2200005171@stu.iku.edu.tr",
+    "share": "33",
+    "admin": [
+     "A_Facilitator"
+    ],
+    "dev": [
+     "R_Ontologist",
+     "R_Backend",
+     "R_Architect"
+    ]
+   },
+   {
+    "name": "M. Ammar Cashlan",
+    "no": "2200002676",
+    "email": "2200002676@stu.iku.edu.tr",
+    "share": "33",
+    "admin": [
+     "A_LogSteward",
+     "A_ReleaseManager"
+    ],
+    "dev": [
+     "R_Frontend",
+     "R_Tester",
+     "R_Ops"
+    ]
+   }
+  ],
+  "leads": {
+   "P01": "Melisa Zeynep Sarıgüzel",
+   "P02": "Melisa Zeynep Sarıgüzel",
+   "P03": "Melisa Zeynep Sarıgüzel",
+   "P04": "Ahmet Celal Koç",
+   "P05": "Ahmet Celal Koç",
+   "P06": "Ahmet Celal Koç",
+   "P08": "Ahmet Celal Koç",
+   "P07": "Ahmet Celal Koç",
+   "P09": "M. Ammar Cashlan",
+   "P10": "M. Ammar Cashlan",
+   "P11": "Melisa Zeynep Sarıgüzel",
+   "P12": "M. Ammar Cashlan",
+   "P13": "M. Ammar Cashlan",
+   "P14": "M. Ammar Cashlan"
+  },
+  "worklog": [
+   {
+    "seq": 1,
+    "ts": "2026-10-17T16:49:20.844Z",
+    "member": "Melisa Zeynep Sarıgüzel",
+    "process": "P03",
+    "story": "",
+    "hours": 1.25,
+    "description": "Talked to classmates about how they revise from course PDFs",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "GENESIS",
+    "hash": "4ee1ec6778232c5b30e83ae2a3268e50ea274053910a2589a9aee9d4d715ffd8"
+   },
+   {
+    "seq": 2,
+    "ts": "2026-10-17T16:50:16.191Z",
+    "member": "Melisa Zeynep Sarıgüzel",
+    "process": "P03",
+    "story": "",
+    "hours": 1.25,
+    "description": "Wrote the mission, problem, goals and stories in the proposal workbench",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "4ee1ec6778232c5b30e83ae2a3268e50ea274053910a2589a9aee9d4d715ffd8",
+    "hash": "c845d8344786616c3d3a856ff3062b2913a3bd883a077348000ed65767cb5bf2"
+   },
+   {
+    "seq": 3,
+    "ts": "2026-10-17T16:51:00.893Z",
+    "member": "Ahmet Celal Koç",
+    "process": "P06",
+    "story": "",
+    "hours": 1.5,
+    "description": "Reviewed the pdf-ai-query prototype code and listed what it cannot do",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "c845d8344786616c3d3a856ff3062b2913a3bd883a077348000ed65767cb5bf2",
+    "hash": "d4145f5bfcbd17c49b8f9712e4cc8d354c816096e2dd1f62500ecc0da0bdc598"
+   },
+   {
+    "seq": 4,
+    "ts": "2026-10-17T16:51:31.109Z",
+    "member": "Ahmet Celal Koç",
+    "process": "P05",
+    "story": "",
+    "hours": 1.5,
+    "description": "Drafted the document, page, chunk and topic classes for the graph",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "d4145f5bfcbd17c49b8f9712e4cc8d354c816096e2dd1f62500ecc0da0bdc598",
+    "hash": "08fceb28d640789ba81613ec653e95f71ca06b90daa19f4ca6aa13ded1f1404b"
+   },
+   {
+    "seq": 5,
+    "ts": "2026-10-17T16:55:18.895Z",
+    "member": "M. Ammar Cashlan",
+    "process": "P10",
+    "story": "",
+    "hours": 1,
+    "description": "Created the GitHub repository and invited the team and the instructor",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "08fceb28d640789ba81613ec653e95f71ca06b90daa19f4ca6aa13ded1f1404b",
+    "hash": "6bcde92368661c89fb88234de5c70f7ca5cb038f70aafd58230270c6243a1ebe"
+   },
+   {
+    "seq": 6,
+    "ts": "2026-10-17T16:55:40.109Z",
+    "member": "M. Ammar Cashlan",
+    "process": "P09",
+    "story": "",
+    "hours": 1.5,
+    "description": "Wrote the definition of done and the test cases for each story",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "6bcde92368661c89fb88234de5c70f7ca5cb038f70aafd58230270c6243a1ebe",
+    "hash": "dfe33d7d2425a923e085dfd9be7fe97e4c59b9462e63d3e54d57639f25e6f219"
+   },
+   {
+    "seq": 7,
+    "ts": "2026-10-17T17:41:05.838Z",
+    "member": "Melisa Zeynep Sarıgüzel",
+    "process": "P01",
+    "story": "",
+    "hours": 1,
+    "description": "Defined the project mission, end users and scope for the CourseGraph proposal",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "dfe33d7d2425a923e085dfd9be7fe97e4c59b9462e63d3e54d57639f25e6f219",
+    "hash": "9a8b0f9fdc36c8631092b7ff57c485b965b2f72ee732ad9c4c43bd2bdce8c338"
+   }
+  ],
+  "customers": [
+   {
+    "name": "Güray Tahan",
+    "contact": "Güray Tahan, Computer Engineering student at İKÜ",
+    "reached": "WhatsApp message and short follow-up chat, 10 October 2026",
+    "relation": "client",
+    "gets": "a study assistant that answers questions from their own course PDFs and shows the page each answer comes from"
+   },
+   {
+    "name": "Hasan Mert Yıldırım",
+    "contact": "Hasan Mert Yıldırım, Computer Engineering student at İKÜ",
+    "reached": "WhatsApp message and short follow-up chat, 13 October 2026",
+    "relation": "client",
+    "gets": "a study assistant that answers questions from their own course PDFs and shows the page each answer comes from"
+   },
+   {
+    "name": "Nida Akın",
+    "contact": "Nida Akın, Computer Engineering student at İKÜ",
+    "reached": "WhatsApp message and short follow-up chat, 15 October 2026",
+    "relation": "client",
+    "gets": "a study assistant that answers questions from their own course PDFs and shows the page each answer comes from"
+   },
+   {
+    "contact": "Mahfouz Khalil, Computer Engineering student at İKÜ",
+    "name": "Mahfouz Khalil",
+    "reached": "WhatsApp message and short follow-up chat, 16 October 2026",
+    "relation": "client",
+    "gets": "a study assistant that answers questions from their own course PDFs and shows the page each answer comes from"
+   }
+  ],
+  "endUsers": [
+   {
+    "group": "Course student",
+    "who": "İKÜ undergraduate students who study from the lecture slides and notes published on CATS",
+    "task": "uploads the PDFs of a course and asks questions while revising, then opens the cited pages",
+    "frequency": "weekly",
+    "device": "laptop browser"
+   },
+   {
+    "group": "Study group lead",
+    "who": "a student who organises a study group for one course and shares material with classmates",
+    "task": "uploads the full PDF set of a course once and checks that answers cite the right slides",
+    "frequency": "weekly",
+    "device": "laptop browser"
+   }
+  ],
+  "problem": "Students in the Computer Engineering department revise from the lecture PDFs each course publishes on CATS. A fourth-year student typically takes five or six courses, and each course publishes around 10 to 14 slide decks and notes per term, so a single student revises from roughly 60 to 80 PDFs and several hundred pages. To find where a concept such as third normal form or a Fourier transform property is explained, students open files one by one and use the viewer's word search, which only finds exact words and misses slides that explain the idea in other terms. Classmates we talked to estimated that, in exam weeks, finding the right slide for one question takes about 5 to 10 minutes. General chatbots answer quickly but do not use the course's own material, mix in other definitions, and cannot show which slide an answer comes from, so students cannot trust them for the exam. Our earlier prototype indexes only one PDF placed in a folder, must be re-run by hand for every new file, and returns one matching paragraph without a generated answer or a page reference.",
+  "title": "CourseGraph: a knowledge-graph assistant that answers questions from course PDFs with cited sources",
+  "mission": "Give every Course student and Study group lead at İKÜ a local assistant that turns their course PDFs into a knowledge graph of documents, pages and topics, answers their questions only from that graph with the page each statement comes from, and refuses when the documents do not cover the question.",
+  "missionOrigin": "IOrigin_Derived",
+  "outcome": "A student uploads the PDFs of a course from one web page, asks a question in their own words and, within seconds, reads an answer whose every part links to the document and page it came from; when the material does not cover the question, the assistant says so instead of guessing.",
+  "areas": [
+   {
+    "area": "Course-document knowledge graph",
+    "where": "ingest/ and graph/",
+    "measure": "prototype stores one PDF as a JSON list of vectors"
+   },
+   {
+    "area": "Retrieval and grounded answering",
+    "where": "assistant/",
+    "measure": "prototype returns one matching chunk, no answer, no page reference"
+   },
+   {
+    "area": "Web interface and quality report",
+    "where": "web/ and tests/",
+    "measure": "prototype has one Flask page; no tests, no metrics"
+   }
+  ],
+  "deliverables": [
+   {
+    "text": "PDF upload and ingestion into an RDF graph of documents, pages and chunks",
+    "area": "A1",
+    "layer": "Layer_Product",
+    "kind": "Kind_Functional"
+   },
+   {
+    "text": "Course ontology with a SKOS topic scheme and SHACL shapes",
+    "area": "A1",
+    "layer": "Layer_Product",
+    "kind": "Kind_Functional"
+   },
+   {
+    "text": "Hybrid retrieval (SPARQL filter plus embedding similarity) returning the top 3 chunks with page numbers",
+    "area": "A2",
+    "layer": "Layer_Product",
+    "kind": "Kind_Functional"
+   },
+   {
+    "text": "Local LLM answer through Ollama with page citations and a PROV-O record",
+    "area": "A2",
+    "layer": "Layer_Product",
+    "kind": "Kind_Functional"
+   },
+   {
+    "text": "An answer is returned in under 10 seconds for 90% of test questions on a student laptop",
+    "area": "A2",
+    "layer": "Layer_Product",
+    "kind": "Kind_NonFunctional"
+   },
+   {
+    "text": "Single web page for upload, questions and the /report quality page",
+    "area": "A3",
+    "layer": "Layer_Product",
+    "kind": "Kind_Functional"
+   },
+   {
+    "text": "pytest suite, 50-question evaluation set and GitHub Actions workflow",
+    "area": "A3",
+    "layer": "Layer_Work",
+    "kind": "Kind_NonFunctional"
+   }
+  ],
+  "exclusions": [
+   {
+    "what": "Cloud LLM APIs such as hosted chat models",
+    "why": "documents and questions stay on the student's computer and the tool must be free to run"
+   },
+   {
+    "what": "OCR of scanned PDFs without a text layer",
+    "why": "text recognition is a separate problem; such files are refused with a clear message"
+   },
+   {
+    "what": "User accounts and sharing between students",
+    "why": "the tool runs locally for one student at a time"
+   },
+   {
+    "what": "Publishing or redistributing course PDFs",
+    "why": "the material belongs to the lecturers; files stay on the student's own machine"
+   }
+  ],
+  "entities": [
+   {
+    "entity": "Document",
+    "def": "one uploaded course PDF with its course code, title and file fingerprint",
+    "create": "yes",
+    "use": "yes",
+    "end": "yes"
+   },
+   {
+    "entity": "Page",
+    "def": "one page of a document with its page number and extracted text",
+    "create": "yes",
+    "use": "yes",
+    "end": "yes"
+   },
+   {
+    "entity": "Chunk",
+    "def": "a passage of a page with its embedding, the unit that retrieval returns",
+    "create": "yes",
+    "use": "yes",
+    "end": "yes"
+   },
+   {
+    "entity": "Topic",
+    "def": "a SKOS concept of the course, such as normalization, linked to the chunks that discuss it",
+    "create": "yes",
+    "use": "yes",
+    "end": "no"
+   },
+   {
+    "entity": "Answer",
+    "def": "a generated reply to one question with the citations it rests on",
+    "create": "yes",
+    "use": "yes",
+    "end": "no"
+   }
+  ],
+  "projectKind": "PK_Search",
+  "techWhy": "RDFLib stores every document, page and chunk as RDF triples, so a chunk always knows its document, page and course. A SKOS concept scheme holds each course's topics and links them to chunks. SHACL shapes, run with pySHACL, refuse a file whose pages have no text or whose chunks miss a page number, so the assistant never cites a broken source. SPARQL selects the candidate chunks of the chosen course and topic before embedding similarity ranks them, which is the GraphRAG pattern. PROV-O records which chunks, model and question produced each answer, so any answer can be traced back.",
+  "goals": [
+   {
+    "goal": "Students get correct answers that cite the course page they come from",
+    "facing": "Facing_Mission",
+    "area": "A2",
+    "why": "this is the change our classmates asked for"
+   },
+   {
+    "goal": "Every uploaded PDF becomes a valid graph of pages, chunks and topics",
+    "facing": "Facing_Scope",
+    "area": "A1",
+    "why": "an answer can only be as good as the graph behind it"
+   },
+   {
+    "goal": "Students upload, ask and see answer quality from one web page",
+    "facing": "Facing_Scope",
+    "area": "A3",
+    "why": "the prototype needed scripts run by hand for each new file"
+   },
+   {
+    "goal": "No document, question or answer leaves the student's computer",
+    "facing": "Facing_Containment",
+    "area": "A2",
+    "why": "course material belongs to the lecturers and must not go to outside services"
+   }
+  ],
+  "spec": "The system lets a student upload course PDFs from a web page, extracts the text of every page, splits pages into chunks, computes an embedding for each chunk and stores documents, pages, chunks and topics in an RDF graph validated by SHACL shapes. For each question it selects candidate chunks with SPARQL by course and topic, ranks them by embedding similarity, sends the top three to a local LLM through Ollama and returns an answer with the document and page of each cited chunk. It records every answer with PROV-O. When no chunk is similar enough it says that the documents do not cover the question and gives no answer.",
+  "scenarios": [
+   {
+    "kind": "Scen_Nominal",
+    "text": "Given a lecture PDF that explains normalization is uploaded, when the student asks what third normal form is, then the answer cites the document and pages of the three chunks it used"
+   },
+   {
+    "kind": "Scen_Rejection",
+    "text": "Given uploaded PDFs of a databases course, when the student asks about a topic none of them covers, then the assistant says no source was found and gives no answer"
+   },
+   {
+    "kind": "Scen_Rejection",
+    "text": "Given a scanned PDF with no text layer, when the student uploads it, then the file is refused and the message says it contains no text"
+   }
+  ],
+  "useCase": "Course student: upload PDFs, ask a question, open a cited page. Study group lead: upload a course's PDF set, filter by course, read the quality report.",
+  "objectives": [
+   {
+    "objective": "Answers whose cited pages support the answer",
+    "goal": "G1",
+    "mkind": "Meas_Judged",
+    "query": "share of answers on the 50-question set where two team members agree the cited pages support the answer, %",
+    "baseline": "0 (the prototype cites no page)",
+    "target": "85",
+    "dir": "Dir_Increase"
+   },
+   {
+    "objective": "Recall@3 on the evaluation set",
+    "goal": "G1",
+    "query": "share of the 50 questions whose expected page is among the top 3 retrieved chunks, computed by the evaluation script",
+    "mkind": "Meas_Derived",
+    "baseline": "not measurable (the prototype returns only one chunk)",
+    "target": "0.80",
+    "dir": "Dir_Increase"
+   },
+   {
+    "objective": "Test PDFs that pass the shapes",
+    "goal": "G2",
+    "mkind": "Meas_Counted",
+    "query": "share of the 20 test PDFs with a text layer whose graph passes pySHACL, %",
+    "baseline": "0",
+    "target": "100",
+    "dir": "Dir_Increase"
+   },
+   {
+    "objective": "Steps from a new PDF to a cited answer",
+    "goal": "G3",
+    "mkind": "Meas_Counted",
+    "query": "user actions needed to get an answer from a newly added PDF",
+    "baseline": "4 (copy file, run embed.py, restart app, ask)",
+    "target": "2 (upload, ask)",
+    "dir": "Dir_Decrease"
+   },
+   {
+    "objective": "Requests to outside services during a session",
+    "goal": "G4",
+    "mkind": "Meas_Counted",
+    "query": "outgoing network connections other than to localhost logged during a full test run",
+    "baseline": "0",
+    "target": "0",
+    "dir": "Dir_Hold"
+   }
+  ],
+  "activity": "The student opens the page and uploads a PDF. The system extracts its text; if a page has no text the file is refused with a message. Otherwise it splits pages into chunks, computes embeddings, links chunks to topics and validates the graph with SHACL; on a violation the upload is rolled back and reported. The student chooses a course and asks a question. The retriever selects and ranks chunks; if none is similar enough the assistant says no source was found. Otherwise the LLM writes an answer from the top three chunks, citations are attached, the answer is recorded with PROV-O and shown.",
+  "sequence": "The web page sends the question and course to the answer service. The answer service sends a SPARQL query to the graph store and receives the candidate chunks of that course. It asks the embedding model for the question vector, ranks the candidates and keeps the top three. It sends the question and the three chunks to Ollama and receives the draft answer. It writes a PROV-O record to the graph and returns the answer with document titles and page numbers to the web page, which shows each citation as a link to the page.",
+  "initiativeKind": "Kind_EvolutionaryDevelopment",
+  "epics": [
+   {
+    "epic": "Build the course-document knowledge graph",
+    "objective": "O3"
+   },
+   {
+    "epic": "Answer questions with cited sources",
+    "objective": "O1"
+   },
+   {
+    "epic": "One-page workflow and quality report",
+    "objective": "O4"
+   }
+  ],
+  "stories": [
+   {
+    "epic": "E1",
+    "role": "Course student",
+    "want": "to upload a lecture PDF from the web page",
+    "so": "I do not have to run scripts by hand for every new file",
+    "ac": "Given a 40-page lecture PDF When I upload it Then its pages and chunks are added to the graph and the page shows the file as ready",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Interaction",
+    "bv": "8",
+    "tc": "6",
+    "rr": "5",
+    "js": "5"
+   },
+   {
+    "epic": "E1",
+    "role": "Study group lead",
+    "want": "to be told when a file cannot be indexed",
+    "so": "I can replace it with a version that has text",
+    "ac": "Given a scanned PDF with no text layer When I upload it Then it is refused and the message says the file contains no text",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Data",
+    "bv": "5",
+    "tc": "4",
+    "rr": "6",
+    "js": "2"
+   },
+   {
+    "epic": "E2",
+    "role": "Course student",
+    "want": "an answer that cites the slides it comes from",
+    "so": "I can check it against the course material before the exam",
+    "ac": "Given an uploaded PDF that explains normalization When I ask what third normal form is Then the answer cites the document and page of each chunk it used",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Architecture",
+    "bv": "10",
+    "tc": "8",
+    "rr": "7",
+    "js": "8"
+   },
+   {
+    "epic": "E2",
+    "role": "Course student",
+    "want": "the assistant to say when my documents do not cover a question",
+    "so": "I am never given an invented answer",
+    "ac": "Given uploaded PDFs of a databases course When I ask about a topic none of them covers Then the assistant says no source was found and gives no answer",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Architecture",
+    "bv": "9",
+    "tc": "6",
+    "rr": "8",
+    "js": "3"
+   },
+   {
+    "epic": "E2",
+    "role": "Study group lead",
+    "want": "to limit answers to one course",
+    "so": "answers do not mix material from different courses",
+    "ac": "Given PDFs from two courses When I choose SEN5016 and ask a question Then every cited chunk comes from a SEN5016 document",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Data",
+    "bv": "6",
+    "tc": "4",
+    "rr": "4",
+    "js": "4"
+   },
+   {
+    "epic": "E3",
+    "role": "Study group lead",
+    "want": "a quality report of the assistant",
+    "so": "I can tell my group how far to trust it",
+    "ac": "Given the 50-question evaluation set When I open the report page Then I see Recall@3, citation accuracy and median answer time",
+    "cat": "Cat_NewCapability",
+    "concern": "Concern_Interface_UI",
+    "bv": "6",
+    "tc": "3",
+    "rr": "5",
+    "js": "3"
+   }
+  ],
+  "dod": [
+   {
+    "criterion": "All tests pass in continuous integration",
+    "check": "GitHub Actions run pytest on every push"
+   },
+   {
+    "criterion": "The graph built from the test PDFs conforms to the shapes",
+    "check": "pySHACL report in the pipeline log"
+   },
+   {
+    "criterion": "The story's acceptance criterion is shown working",
+    "check": "a test named after the story or a short recorded demo"
+   }
+  ],
+  "classModel": "Document has a course code, a title, a file fingerprint and many Pages. Page has a page number and text and belongs to one Document. Chunk has text, an embedding and a position and belongs to one Page; a Chunk may discuss several Topics. Topic is a skos:Concept in the course's concept scheme. Question has a text and a chosen course. Answer has a text, a model name and many Citations, and is a prov:Entity generated from one Question. Citation links an Answer to one Chunk.",
+  "tests": [
+   {
+    "story": "S1",
+    "case": "upload a 40-page sample PDF and count pages and chunks in the graph",
+    "data": "one sample lecture PDF"
+   },
+   {
+    "story": "S2",
+    "case": "upload a scanned PDF and expect a refusal naming the missing text",
+    "data": "one image-only PDF"
+   },
+   {
+    "story": "S3",
+    "case": "ask ten questions with known pages and check every answer cites a retrieved chunk",
+    "data": "ten questions from the evaluation set"
+   },
+   {
+    "story": "S4",
+    "case": "ask five off-topic questions and expect the no-source reply",
+    "data": "five questions outside the uploaded PDFs"
+   },
+   {
+    "story": "S5",
+    "case": "upload PDFs of two courses, filter one and check all citations",
+    "data": "two small course PDF sets"
+   },
+   {
+    "story": "S6",
+    "case": "run the evaluation and compare the report figures with the script output",
+    "data": "the 50-question evaluation set"
+   }
+  ],
+  "model_Architecture": "Design-level class diagram: Document, Page, Chunk, Topic (skos:Concept), Question, Answer (prov:Entity) and Citation as in the class model; DocumentShape requires a course code and at least one Page, PageShape requires non-empty text and a page number, ChunkShape requires a Page and an embedding.",
+  "model_Data": "Component diagram: WebPage (Flask) calls IngestService and AnswerService; IngestService uses PyPDF, the embedding model and Validator (pySHACL) and writes to GraphStore (RDFLib); AnswerService queries GraphStore with SPARQL, calls the embedding model and the local LLM through Ollama, and writes PROV-O records; Evaluator runs the question set through AnswerService.",
+  "model_Interaction": "Sequence of an upload: the student drops a PDF on the page; the page sends it to IngestService; IngestService extracts the text, builds pages and chunks, validates them and either stores them and returns ready, or rolls back and returns the reason; the page updates the document's status.",
+  "model_User_interface": "One page in three parts: an upload area listing each document with its course and status (ready or refused with the reason); a question box with a course filter and the answer below it, each citation shown as document title and page number; a report tab with Recall@3, citation accuracy and median answer time.",
+  "milestones": [
+   {
+    "date": "2026-10-31",
+    "deliverable": "Ingestion into the RDF graph with ontology and SHACL shapes",
+    "owner": "Ahmet Celal Koç"
+   },
+   {
+    "deliverable": "Hybrid retrieval and cited answers through Ollama",
+    "owner": "Melisa Zeynep Sarıgüzel",
+    "date": "2026-11-20"
+   },
+   {
+    "deliverable": "Web page and /report quality page with the evaluation set",
+    "owner": "M. Ammar Cashlan",
+    "date": "2026-12-04"
+   },
+   {
+    "deliverable": "Tagged release v1.0.0 with test report",
+    "owner": "M. Ammar Cashlan",
+    "date": "2026-12-06"
+   }
+  ],
+  "risks": [
+   {
+    "risk": "The local LLM is too slow on student laptops",
+    "likelihood": "medium",
+    "impact": "medium",
+    "mitigation": "use a small model, cache embeddings and measure answer time on every release"
+   },
+   {
+    "risk": "The LLM states things the cited chunks do not support",
+    "likelihood": "high",
+    "impact": "high",
+    "mitigation": "answer only from the top three chunks, refuse below a similarity threshold, and judge citation accuracy on the evaluation set"
+   },
+   {
+    "risk": "Extracted PDF text is messy (tables, formulas, slide layouts)",
+    "likelihood": "medium",
+    "impact": "medium",
+    "mitigation": "clean text with regular expressions and test with PDFs from three different courses"
+   },
+   {
+    "risk": "A member has less time near exam weeks",
+    "likelihood": "medium",
+    "impact": "medium",
+    "mitigation": "every module has an owner and a second member who can take it over"
+   }
+  ],
+  "refs": [
+   {
+    "ref": "Sarıgüzel, M. Z. (2025). pdf-ai-query: semantic search over a PDF with Sentence Transformers. GitHub repository, https://github.com/MelisaZS/pdf-ai-query (prototype this project evolves from)."
+   },
+   {
+    "ref": "Sweigart, A. (2025). Automate the Boring Stuff with Python, 3rd ed. No Starch Press."
+   },
+   {
+    "ref": "Lewis, P. et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. Advances in Neural Information Processing Systems 33 (NeurIPS 2020)."
+   },
+   {
+    "ref": "Reimers, N. & Gurevych, I. (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. Proceedings of EMNLP-IJCNLP 2019."
+   },
+   {
+    "ref": "W3C (2014). RDF 1.1 Concepts and Abstract Syntax. W3C Recommendation."
+   },
+   {
+    "ref": "W3C (2017). Shapes Constraint Language (SHACL). W3C Recommendation."
+   },
+   {
+    "ref": "W3C (2013). PROV-O: The PROV Ontology. W3C Recommendation."
+   }
+  ],
+  "libraries": "Python libraries: PyPDF for text extraction, sentence-transformers for embeddings, RDFLib and pySHACL for the graph and its validation, Flask for the web page, the ollama client for the local model, and pytest for tests. Course topics applied: files and paths (pathlib) for the document folder, regular expressions to clean extracted text and read course codes from file names, reading PDF documents, web pages with Flask, multithreading to index several PDFs at once, and openpyxl to export the evaluation results.",
+  "repoCheck": {
+   "ok": true,
+   "result": "found",
+   "at": "2026-10-17T17:45:41.090Z",
+   "full_name": "swammar7/PDF-AI-Query-PDF-Sorgulama-Sistemi",
+   "html_url": "https://github.com/swammar7/PDF-AI-Query-PDF-Sorgulama-Sistemi",
+   "private": false,
+   "created_at": "2026-10-17T17:35:54Z",
+   "pushed_at": "2026-10-17T17:44:07Z",
+   "default_branch": "main",
+   "id": 1423582103
+  }
+ }
+}
