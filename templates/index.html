@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}CourseGraph – Home{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================ -->
+<!--  SECTION 1: PDF Upload                                       -->
+<!-- ============================================================ -->
+<section class="card">
+    <h2>📤 Upload a Course PDF</h2>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="pdf_file">PDF File</label>
+                <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+            </div>
+            <div class="form-group">
+                <label for="course_code">Course Code</label>
+                <input type="text" id="course_code" name="course_code" placeholder="e.g. SEN5016" required>
+            </div>
+            <div class="form-group form-group-btn">
+                <button type="submit" class="btn btn-primary">Upload &amp; Index</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- ============================================================ -->
+<!--  Uploaded Documents List                                     -->
+<!-- ============================================================ -->
+{% if documents %}
+<section class="card">
+    <h2>📁 Uploaded Documents</h2>
+    <table class="doc-table">
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Course</th>
+                <th>Pages</th>
+                <th>Chunks</th>
+                <th>Status</th>
+                <th>Uploaded</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td>{{ doc.filename }}</td>
+                <td><span class="badge">{{ doc.course }}</span></td>
+                <td>{{ doc.pages }}</td>
+                <td>{{ doc.chunks }}</td>
+                <td>
+                    {% if doc.status == 'ready' %}
+                        <span class="status status-ready">✔ Ready</span>
+                    {% else %}
+                        <span class="status status-error">✘ {{ doc.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ doc.uploaded_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+<!-- ============================================================ -->
+<!--  SECTION 2: Ask a Question                                   -->
+<!-- ============================================================ -->
+<section class="card">
+    <h2>❓ Ask a Question</h2>
+    <form action="{{ url_for('ask') }}" method="post" class="ask-form">
+        <div class="form-row">
+            <div class="form-group" style="flex:0 0 180px;">
+                <label for="course_filter">Course Filter</label>
+                <select id="course_filter" name="course_filter">
+                    <option value="">All courses</option>
+                    {% for c in courses %}
+                    <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label for="question">Your Question</label>
+                <input type="text" id="question" name="question" placeholder="e.g. What is third normal form?"
+                       value="{{ question if question else '' }}" required>
+            </div>
+            <div class="form-group form-group-btn">
+                <button type="submit" class="btn btn-primary">Ask</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 3: Answer & Citations                               -->
+<!-- ============================================================ -->
+{% if answer %}
+<section class="card card-answer">
+    <h2>💡 Answer</h2>
+    <p class="answer-text">{{ answer.text }}</p>
+
+    {% if answer.citations %}
+    <h3>📎 Sources</h3>
+    <div class="citations">
+        {% for cite in answer.citations %}
+        <div class="citation-card">
+            <div class="citation-header">
+                <strong>{{ cite.document }}</strong> &mdash; Page {{ cite.page }}
+            </div>
+            <p class="citation-chunk">"{{ cite.chunk }}"</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <p class="answer-meta">Response time: {{ answer.time_ms }} ms</p>
+</section>
+{% endif %}
+
+{% endblock %}
