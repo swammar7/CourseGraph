@@ -1,0 +1,304 @@
+/* ==========================================================================
+   CourseGraph – Main Stylesheet
+   ========================================================================== */
+
+/* --- Reset & Base -------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Navbar -------------------------------------------------------------- */
+.navbar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-brand {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.nav-link {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: #fff;
+}
+
+/* --- Container ----------------------------------------------------------- */
+.container {
+    max-width: 960px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+}
+
+/* --- Cards --------------------------------------------------------------- */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #1a1a2e;
+}
+
+.card-answer {
+    border-left: 4px solid #4361ee;
+}
+
+/* --- Flash Messages ------------------------------------------------------ */
+.flash-messages {
+    margin-bottom: 1rem;
+}
+
+.flash {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.flash-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- Forms --------------------------------------------------------------- */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 160px;
+}
+
+.form-group-btn {
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group select {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+/* --- Buttons ------------------------------------------------------------- */
+.btn {
+    display: inline-block;
+    padding: 0.55rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: #4361ee;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #3a56d4;
+}
+
+/* --- Document Table ------------------------------------------------------ */
+.doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.doc-table th,
+.doc-table td {
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.doc-table th {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.badge {
+    display: inline-block;
+    background: #e8ecf8;
+    color: #4361ee;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-ready {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* --- Answer -------------------------------------------------------------- */
+.answer-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.answer-meta {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 1rem;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 1.25rem;
+}
+
+/* --- Citations ----------------------------------------------------------- */
+.citations {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.citation-card {
+    background: #f8f9fc;
+    border: 1px solid #e2e6f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.citation-header {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: #4361ee;
+}
+
+.citation-chunk {
+    font-size: 0.85rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* --- Metrics Grid (Report Page) ------------------------------------------ */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.metric-card {
+    background: #f8f9fc;
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px solid #e2e6f0;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4361ee;
+}
+
+.metric-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0.25rem 0;
+}
+
+.metric-desc {
+    font-size: 0.78rem;
+    color: #888;
+}
+
+/* --- Footer -------------------------------------------------------------- */
+.footer {
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.8rem;
+    color: #999;
+    border-top: 1px solid #e5e5e5;
+    margin-top: auto;
+}

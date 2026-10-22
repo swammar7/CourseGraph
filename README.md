@@ -1,34 +1,69 @@
 # CourseGraph
 
-A local assistant that turns course PDFs into a knowledge graph and answers students' questions with the document and page each answer comes from.
+**CourseGraph** is a knowledge-graph-powered study assistant built for university course revision. It allows students to upload course lecture slide PDFs, indexes them into a structured knowledge graph, and answers questions using a local LLM while citing the exact source documents and page numbers.
 
-SEN0414 Advanced Programming · İstanbul Kültür University · 2026–2027 Fall
+---
 
-## Team
-- Melisa Zeynep Sarıgüzel (team lead, retrieval and answers)
-- Ahmet Celal Koç (ingestion, ontology and SHACL shapes)
-- M. Ammar Cashlan (web interface, tests and CI)
+## Current Status: Phase 1 (UI Skeleton & CI Setup)
 
-## What it does
-1. Upload course PDFs from a web page.
-2. Pages and chunks are stored in an RDF graph (documents, pages, chunks, SKOS topics) and checked with SHACL.
-3. A question is answered from the top 3 chunks (SPARQL filter + embedding similarity) by a local LLM through Ollama.
-4. Every answer shows its source document and page; if no source fits, it says so.
-5. Answers are recorded with PROV-O; the /report page shows Recall@3, citation accuracy and answer time.
+This repository currently contains the **Phase 1** foundation:
+- **Flask Web Interface:** Complete frontend UI with mock data for demonstration.
+- **Upload & Query Forms:** Allows testing file validation, course code assignment, and query responses.
+- **Answer Display with Citations:** UI cards ready to render citations (Document title, Page number, Source snippet).
+- **Quality Report (`/report`):** Initial dashboard view for evaluation metrics (Recall@3, citation accuracy, median latency).
+- **Automated Testing:** 15 pytest test cases verifying all route responses and form validations.
+- **Continuous Integration (CI):** GitHub Actions pipeline configured to run tests automatically on every push.
 
-## Stack
-Python · Flask · PyPDF · sentence-transformers · RDFLib · pySHACL · SPARQL · SKOS · PROV-O · Ollama · pytest · GitHub Actions
+---
 
-## Background
-CourseGraph evolves from the earlier prototype [MelisaZS/pdf-ai-query](https://github.com/MelisaZS/pdf-ai-query), which searched a single PDF with Sentence Transformers.
+## Project Structure
 
-## Repository layout (planned)
-- `ingest/` PDF reading and chunking
-- `graph/` ontology, SHACL shapes, graph store
-- `assistant/` retrieval and answer service
-- `web/` Flask interface and /report page
-- `tests/` pytest suite and evaluation set
-- `proposal/` course proposal files (Proposal Workbench)
+```text
+├── app.py                      # Flask web application and mock service layer
+├── requirements.txt            # Python dependencies (Flask, Pytest, etc.)
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions CI workflow
+├── static/
+│   └── style.css               # Main styling
+├── templates/
+│   ├── base.html               # Shared layout (navbar, footer, flash alerts)
+│   ├── index.html              # Main page (upload, query, citation cards)
+│   └── report.html             # /report evaluation metrics dashboard
+└── tests/
+    ├── conftest.py             # Pytest setup and test client fixtures
+    └── test_routes.py          # 15 tests covering all routes and validations
+```
 
-## Status
-Proposal stage. Milestones: graph and shapes (31 Oct), cited answers (20 Nov), web page and report (4 Dec), release v1.0.0 (6 Dec).
+---
+
+## Quickstart
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Run the Application
+```bash
+python app.py
+```
+Open your browser at: `http://127.0.0.1:5000`
+
+### 3. Run the Tests
+```bash
+pytest tests/ -v
+```
+
+---
+
+## Integration Plan for Teammates (Next Steps)
+
+* **Celal (PDF Ingestion & RDF Graph):**
+  - In `app.py`, replace the mock logic in the `/upload` route with your `IngestService`.
+  - Pass the uploaded PDF to the RDF graph builder and SHACL validator.
+
+* **Melisa (Hybrid Retriever & Ollama LLM):**
+  - In `app.py`, replace the `_mock_answer()` function in the `/ask` route with your `AnswerService`.
+  - Return the top-3 retrieved chunks with exact page numbers and PROV-O metadata.
+  - Connect live evaluation results to the `/report` template.
