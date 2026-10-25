@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CourseGraph • PDF Arşivi</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, sans-serif; color: #183047; background: #f3f7fa; }
+    * { box-sizing: border-box; }
+    body { max-width: 850px; margin: 35px auto; padding: 0 20px; }
+    h1 { margin-bottom: 6px; }
+    h2 { margin-top: 0; font-size: 1.2rem; }
+    .muted { color: #58697a; line-height: 1.5; }
+    .panel { background: white; padding: 22px; border-radius: 13px; border: 1px solid #d9e2eb; margin: 20px 0; }
+    label { display: block; margin: 12px 0 5px; font-weight: 600; }
+    input, textarea { width: 100%; border: 1px solid #abb9c6; border-radius: 7px; padding: 10px; font: inherit; }
+    button { background: #0a638a; border: none; border-radius: 7px; color: white; padding: 10px 20px; margin-top: 15px; font: inherit; cursor: pointer; }
+    .message { padding: 12px; border-radius: 7px; background: #e7f5ed; margin: 12px 0; }
+    .error { background: #fbe8e6; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5eaf0; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; }
+  </style>
+</head>
+<body>
+  <h1>CourseGraph</h1>
+  <p class="muted">E1: PDF yükleme, sayfa bazlı parçalama, yerel embedding, RDF / SKOS ve SHACL doğrulama.</p>
+
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p role="status" class="message {{ 'error' if category == 'error' else '' }}">{{ message }}</p>
+  {% endfor %}
+
+  <section class="panel">
+    <h2>PDF yükle</h2>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+      <label for="course_id">Ders kodu</label>
+      <input id="course_id" name="course_id" type="text" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" placeholder="SEN0414" required>
+      <label for="pdf">PDF dosyası (en fazla 20 MB)</label>
+      <input id="pdf" name="pdf" type="file" accept=".pdf,application/pdf" required>
+      <label for="topics">Konular (isteğe bağlı; virgülle ayır)</label>
+      <input id="topics" name="topics" placeholder="RDF, Ontoloji, Semantik Web">
+      <button type="submit">Yükle ve doğrula</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Yüklenen belgeler</h2>
+    {% if documents %}
+      <table>
+        <thead><tr><th>PDF</th><th>Ders</th><th>Sayfa</th><th>Parça</th></tr></thead>
+        <tbody>
+          {% for doc in documents %}
+            <tr><td>{{ doc.filename }}</td><td>{{ doc.course }}</td><td>{{ doc.page_count }}</td><td>{{ doc.chunk_count }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Henüz yüklenmiş PDF yok.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <h2>Eski prototip sorgusu (geçici)</h2>
+    <p class="muted">Bu form hâlâ eski index.json verisinde tek paragraf arar. Ders filtreli GraphRAG, atıflı Ollama yanıtları ve PROV-O, Melisa'nın sonraki E2 aşamasıdır.</p>
+    <form action="{{ url_for('home') }}" method="post">
+      <label for="query">Sorunuz</label>
+      <input id="query" name="query" required>
+      <button type="submit">Eski indekste ara</button>
+    </form>
+    {% if answer is not none %}<div class="message"><pre>{{ answer }}</pre></div>{% endif %}
+  </section>
+</body>
+</html>

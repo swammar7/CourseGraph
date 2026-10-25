@@ -1,0 +1,34 @@
+@prefix cg: <https://coursegraph.local/ontology#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cg:CourseShape a sh:NodeShape ;
+    sh:targetClass cg:Course ;
+    sh:property [ sh:path skos:prefLabel ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cg:hasDocument ; sh:class cg:Document ] .
+
+cg:DocumentShape a sh:NodeShape ;
+    sh:targetClass cg:Document ;
+    sh:property [ sh:path cg:belongsToCourse ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Course ] ;
+    sh:property [ sh:path cg:sourceFilename ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path cg:hasPage ; sh:minCount 1 ; sh:class cg:Page ] .
+
+cg:PageShape a sh:NodeShape ;
+    sh:targetClass cg:Page ;
+    sh:property [ sh:path cg:belongsToDocument ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Document ] ;
+    sh:property [ sh:path cg:pageNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:minInclusive 1 ] ;
+    sh:property [ sh:path cg:hasChunk ; sh:class cg:Chunk ] .
+
+cg:ChunkShape a sh:NodeShape ;
+    sh:targetClass cg:Chunk ;
+    sh:property [ sh:path cg:belongsToPage ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Page ] ;
+    sh:property [ sh:path cg:chunkPageNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:minInclusive 1 ] ;
+    sh:property [ sh:path cg:chunkIndex ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path cg:text ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path cg:embeddingJson ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 3 ] ;
+    sh:property [ sh:path cg:hasTopic ; sh:minCount 1 ; sh:class skos:Concept ] .
+
+cg:TopicShape a sh:NodeShape ;
+    sh:targetClass skos:Concept ;
+    sh:property [ sh:path skos:prefLabel ; sh:minCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] .

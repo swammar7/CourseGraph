@@ -1,0 +1,28 @@
+@prefix cg: <https://coursegraph.local/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cg: a owl:Ontology ; rdfs:label "CourseGraph ontology"@en .
+cg:Course a owl:Class ; rdfs:label "Course"@en .
+cg:Document a owl:Class ; rdfs:label "PDF document"@en .
+cg:Page a owl:Class ; rdfs:label "PDF page"@en .
+cg:Chunk a owl:Class ; rdfs:label "Text chunk"@en .
+
+cg:hasDocument a owl:ObjectProperty ; rdfs:domain cg:Course ; rdfs:range cg:Document .
+cg:belongsToCourse a owl:ObjectProperty ; rdfs:domain cg:Document ; rdfs:range cg:Course .
+cg:hasPage a owl:ObjectProperty ; rdfs:domain cg:Document ; rdfs:range cg:Page .
+cg:belongsToDocument a owl:ObjectProperty ; rdfs:domain cg:Page ; rdfs:range cg:Document .
+cg:hasChunk a owl:ObjectProperty ; rdfs:domain cg:Page ; rdfs:range cg:Chunk .
+cg:belongsToPage a owl:ObjectProperty ; rdfs:domain cg:Chunk ; rdfs:range cg:Page .
+cg:hasTopic a owl:ObjectProperty ; rdfs:domain cg:Chunk ; rdfs:range skos:Concept .
+
+cg:sourceFilename a owl:DatatypeProperty ; rdfs:domain cg:Document ; rdfs:range xsd:string .
+cg:contentSha256 a owl:DatatypeProperty ; rdfs:domain cg:Document ; rdfs:range xsd:string .
+cg:pageNumber a owl:DatatypeProperty ; rdfs:domain cg:Page ; rdfs:range xsd:positiveInteger .
+cg:chunkPageNumber a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xsd:positiveInteger .
+cg:chunkIndex a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xsd:nonNegativeInteger .
+cg:text a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xsd:string .
+cg:embeddingJson a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:comment "JSON array of local embedding floats"@en ; rdfs:range xsd:string .
