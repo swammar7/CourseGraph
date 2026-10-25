@@ -25,7 +25,7 @@ cg:ChunkShape a sh:NodeShape ;
     sh:property [ sh:path cg:belongsToPage ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Page ] ;
     sh:property [ sh:path cg:chunkPageNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:minInclusive 1 ] ;
     sh:property [ sh:path cg:chunkIndex ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
-    sh:property [ sh:path cg:text ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path cg:text ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ; sh:pattern "\\S" ] ;
     sh:property [ sh:path cg:embeddingJson ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 3 ] ;
     sh:property [ sh:path cg:hasTopic ; sh:minCount 1 ; sh:class skos:Concept ] .
 

@@ -101,6 +101,81 @@ class GraphStore:
             })
         return sorted(output, key=lambda d: (d["course"], d["filename"]))
 
+    def get_course_chunks(self, course_id: str, *, topic: str | None = None) -> list[dict]:
+        """Return all RDF-backed chunks for E2 retrieval, filtered using SPARQL.
+
+        The embedding field is a list of finite floats, ready for cosine
+        similarity. The result preserves document and page metadata so E2 can
+        construct citations. No similarity ranking or LLM calls happen here.
+
+        ``initBindings`` is used for user-selected data: neither course IDs nor
+        topics are interpolated into a SPARQL query string.
+        """
+        if not _COURSE_ID.fullmatch(course_id):
+            raise ValueError("Geçersiz ders kodu.")
+        if topic is not None:
+            topic = topic.strip() or None
+            if topic is not None and len(topic) > 100:
+                raise ValueError("Konu en fazla 100 karakter olabilir.")
+
+        graph = self.load_graph()
+        topic_pattern = """
+            ?chunk cg:hasTopic ?topicNode .
+            ?topicNode skos:prefLabel ?wantedTopic .
+        """ if topic is not None else ""
+        # The query string only contains our own static SPARQL fragments.
+        query = """
+            PREFIX cg: <https://coursegraph.local/ontology#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            SELECT DISTINCT ?document ?filename ?pageNumber ?chunk
+                            ?chunkIndex ?text ?embeddingJson
+            WHERE {
+                ?course a cg:Course ; cg:hasDocument ?document .
+                ?document cg:belongsToCourse ?course ;
+                          cg:sourceFilename ?filename ; cg:hasPage ?page .
+                ?page cg:pageNumber ?pageNumber ; cg:hasChunk ?chunk .
+                ?chunk cg:belongsToPage ?page ;
+                       cg:chunkIndex ?chunkIndex ;
+                       cg:text ?text ; cg:embeddingJson ?embeddingJson .
+        """ + topic_pattern + """
+            }
+            ORDER BY ?filename ?pageNumber ?chunkIndex ?chunk
+        """
+        bindings = {"course": _resource("course", course_id)}
+        if topic is not None:
+            bindings["wantedTopic"] = Literal(topic, datatype=XSD.string)
+
+        output: list[dict] = []
+        for row in graph.query(query, initBindings=bindings):
+            try:
+                raw = json.loads(str(row.embeddingJson))
+                if not isinstance(raw, list) or not raw or any(
+                    type(value) not in (int, float) or not math.isfinite(float(value))
+                    for value in raw
+                ):
+                    raise ValueError("Invalid embedding vector")
+                embedding = [float(value) for value in raw]
+            except (TypeError, json.JSONDecodeError, ValueError) as exc:
+                raise ValueError(f"Bozuk embeddingJson: {row.chunk}") from exc
+
+            labels = {
+                str(graph.value(topic_uri, SKOS.prefLabel))
+                for topic_uri in graph.objects(row.chunk, CG.hasTopic)
+                if graph.value(topic_uri, SKOS.prefLabel) is not None
+            }
+            output.append({
+                "course_id": course_id,
+                "document_uri": str(row.document),
+                "filename": str(row.filename),
+                "page_number": int(row.pageNumber),
+                "chunk_uri": str(row.chunk),
+                "chunk_index": int(row.chunkIndex),
+                "text": str(row.text),
+                "embedding": embedding,
+                "topics": sorted(labels),
+            })
+        return output
+
     def ingest_pdf(
         self,
         *,

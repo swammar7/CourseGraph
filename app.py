@@ -70,6 +70,37 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
     def list_documents():
         return jsonify(store.list_documents())
 
+    @app.route("/api/courses/<course_id>/chunks", methods=["GET"])
+    def course_chunks(course_id: str):
+        """Paginated read-only diagnostic API; E2 should prefer GraphStore."""
+        course_id = course_id.strip().upper()
+        topic = request.args.get("topic")
+        include_embeddings = request.args.get("include_embeddings", "0")
+        if include_embeddings not in {"0", "1"}:
+            return jsonify({"error": "include_embeddings yalnızca 0 veya 1 olabilir."}), 400
+        try:
+            limit = int(request.args.get("limit", "50"))
+            offset = int(request.args.get("offset", "0"))
+        except ValueError:
+            return jsonify({"error": "limit ve offset tam sayı olmalı."}), 400
+        if not 1 <= limit <= 200 or offset < 0:
+            return jsonify({"error": "limit 1-200, offset en az 0 olmalı."}), 400
+        try:
+            chunks = store.get_course_chunks(course_id, topic=topic)
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
+        page = chunks[offset:offset + limit]
+        if include_embeddings == "0":
+            page = [{k: v for k, v in item.items() if k != "embedding"} for item in page]
+        return jsonify({
+            "course_id": course_id,
+            "topic": topic or None,
+            "total": len(chunks),
+            "limit": limit,
+            "offset": offset,
+            "items": page,
+        })
+
     @app.route("/api/upload", methods=["POST"])
     @app.route("/upload", methods=["POST"])
     def upload():

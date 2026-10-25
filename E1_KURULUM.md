@@ -88,3 +88,14 @@ Bu ilk sürümde otomatik konu çıkarımı, OCR, oturum açma, bulut API, Graph
 3. `feat(e1): add Flask PDF upload and ingestion tests`
 
 Değişiklikleri kendi GitHub hesabından commitleyin; Workbench work-log girişlerine gerçek commit linklerini ekleyin.
+
+## 7. E1 → E2 entegrasyon ve negatif SHACL testleri (ek güncelleme)
+
+- **Python:** `GraphStore.get_course_chunks("SEN0414", topic="RDF")` ders ve isteğe bağlı SKOS etiketiyle SPARQL filtreler; belge adı, sayfa, metin ve `list[float]` embedding döndürür.
+- **HTTP:** `GET /api/courses/SEN0414/chunks?topic=RDF&limit=50&offset=0` sayfalı sonuç verir; `include_embeddings=1` ile vektörler istenebilir.
+- **SHACL:** `cg:text` yalnız boş dizeyi değil, sadece boşluk içeren metni de reddeder. Eksik sayfa numarası, boş chunk, eksik ilişki ve konu etiketi için negatif testler vardır.
+- **Gerçek veri kanıtı:** `python scripts/verify_e1.py --course SEN0414` kaydedilmiş grafı doğrular ve üç farklı geçersiz veri örneğini bellekte test eder; diskteki RDF'ye dokunmaz.
+- **Tam sözleşme ve örnekler:** [`docs/E1_INTEGRATION.md`](docs/E1_INTEGRATION.md).
+- **Test kapsamı ve sınırlar:** [`docs/E1_SHACL_AND_TESTS.md`](docs/E1_SHACL_AND_TESTS.md).
+
+Bu güncelleme E2'nin Retriever/Ollama sorumluluklarını **üstlenmez**; veriyi kullanıma hazır şekilde sunar.
