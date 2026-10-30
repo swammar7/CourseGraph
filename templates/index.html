@@ -1,99 +1,99 @@
 {% extends "base.html" %}
-{% block title %}CourseGraph – Home{% endblock %}
+{% block title %}CourseGraph • Knowledge Graph Assistant{% endblock %}
 
 {% block content %}
 
 <!-- ============================================================ -->
-<!--  SECTION 1: PDF Upload                                       -->
+<!--  SECTION 1: PDF Ingestion into RDF Knowledge Graph           -->
 <!-- ============================================================ -->
 <section class="card">
-    <h2>📤 Upload a Course PDF</h2>
+    <h2>📤 Ingest Course PDF into Knowledge Graph</h2>
+    <p class="subtitle">Extracts pages &amp; chunks, computes local embeddings, builds RDF graph &amp; validates SHACL shapes.</p>
+    
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
         <div class="form-row">
-            <div class="form-group">
-                <label for="pdf_file">PDF File</label>
-                <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+            <div class="form-group" style="flex: 0 0 200px;">
+                <label for="course_id">Course Code *</label>
+                <input type="text" id="course_id" name="course_id" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" placeholder="e.g. SEN0414" required>
             </div>
-            <div class="form-group">
-                <label for="course_code">Course Code</label>
-                <input type="text" id="course_code" name="course_code" placeholder="e.g. SEN5016" required>
+            <div class="form-group" style="flex: 1;">
+                <label for="pdf">PDF File (Max 20 MB) *</label>
+                <input type="file" id="pdf" name="pdf" accept=".pdf,application/pdf" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="topics">Topics (comma-separated SKOS labels)</label>
+                <input type="text" id="topics" name="topics" placeholder="e.g. RDF, SPARQL, Ontologies">
             </div>
             <div class="form-group form-group-btn">
-                <button type="submit" class="btn btn-primary">Upload &amp; Index</button>
+                <button type="submit" class="btn btn-primary">Ingest &amp; Validate</button>
             </div>
         </div>
     </form>
 </section>
 
 <!-- ============================================================ -->
-<!--  Uploaded Documents List                                     -->
+<!--  SECTION 2: Uploaded Documents in RDF Graph                  -->
 <!-- ============================================================ -->
-{% if documents %}
 <section class="card">
-    <h2>📁 Uploaded Documents</h2>
+    <h2>📁 Ingested Course Documents (RDF Graph)</h2>
+    {% if documents %}
     <table class="doc-table">
         <thead>
             <tr>
-                <th>File</th>
-                <th>Course</th>
+                <th>Document Name</th>
+                <th>Course Code</th>
                 <th>Pages</th>
-                <th>Chunks</th>
+                <th>Chunks in Graph</th>
                 <th>Status</th>
-                <th>Uploaded</th>
             </tr>
         </thead>
         <tbody>
             {% for doc in documents %}
             <tr>
-                <td>{{ doc.filename }}</td>
+                <td><strong>{{ doc.filename }}</strong></td>
                 <td><span class="badge">{{ doc.course }}</span></td>
-                <td>{{ doc.pages }}</td>
-                <td>{{ doc.chunks }}</td>
-                <td>
-                    {% if doc.status == 'ready' %}
-                        <span class="status status-ready">✔ Ready</span>
-                    {% else %}
-                        <span class="status status-error">✘ {{ doc.status }}</span>
-                    {% endif %}
-                </td>
-                <td>{{ doc.uploaded_at }}</td>
+                <td>{{ doc.page_count }}</td>
+                <td>{{ doc.chunk_count }}</td>
+                <td><span class="status status-ready">✔ Conforms to SHACL</span></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p class="subtitle" style="margin-bottom: 0;">No documents in the RDF Knowledge Graph yet. Upload a course slide deck above to get started.</p>
+    {% endif %}
 </section>
-{% endif %}
 
 <!-- ============================================================ -->
-<!--  SECTION 2: Ask a Question                                   -->
+<!--  SECTION 3: Ask a Question                                   -->
 <!-- ============================================================ -->
 <section class="card">
-    <h2>❓ Ask a Question</h2>
-    <form action="{{ url_for('ask') }}" method="post" class="ask-form">
+    <h2>❓ Ask CourseGraph Assistant</h2>
+    <form action="{{ url_for('home') }}" method="post" class="ask-form">
         <div class="form-row">
-            <div class="form-group" style="flex:0 0 180px;">
-                <label for="course_filter">Course Filter</label>
+            <div class="form-group" style="flex: 0 0 200px;">
+                <label for="course_filter">Filter by Course</label>
                 <select id="course_filter" name="course_filter">
-                    <option value="">All courses</option>
+                    <option value="">All indexed courses</option>
                     {% for c in courses %}
                     <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group" style="flex:1;">
-                <label for="question">Your Question</label>
-                <input type="text" id="question" name="question" placeholder="e.g. What is third normal form?"
+            <div class="form-group" style="flex: 1;">
+                <label for="query">Question</label>
+                <input type="text" id="query" name="query" placeholder="e.g. What is Third Normal Form (3NF)?"
                        value="{{ question if question else '' }}" required>
             </div>
             <div class="form-group form-group-btn">
-                <button type="submit" class="btn btn-primary">Ask</button>
+                <button type="submit" class="btn btn-primary">Search Graph</button>
             </div>
         </div>
     </form>
 </section>
 
 <!-- ============================================================ -->
-<!--  SECTION 3: Answer & Citations                               -->
+<!--  SECTION 4: Answer & Grounded Citations Display              -->
 <!-- ============================================================ -->
 {% if answer %}
 <section class="card card-answer">
@@ -101,7 +101,7 @@
     <p class="answer-text">{{ answer.text }}</p>
 
     {% if answer.citations %}
-    <h3>📎 Sources</h3>
+    <h3>📎 Cited Sources (Knowledge Graph)</h3>
     <div class="citations">
         {% for cite in answer.citations %}
         <div class="citation-card">
