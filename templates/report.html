@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}CourseGraph – Quality Report{% endblock %}
+
+{% block content %}
+
+<section class="card">
+    <h2>📊 Quality Report</h2>
+    <p class="subtitle">Evaluation results from the 50-question test set.</p>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">{{ "%.0f" | format(metrics.recall_at_3 * 100) }}%</div>
+            <div class="metric-label">Recall@3</div>
+            <div class="metric-desc">Share of questions whose expected page is in the top 3 retrieved chunks</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ "%.0f" | format(metrics.citation_accuracy * 100) }}%</div>
+            <div class="metric-label">Citation Accuracy</div>
+            <div class="metric-desc">Share of answers where cited pages support the answer</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ metrics.median_time_ms }} ms</div>
+            <div class="metric-label">Median Answer Time</div>
+            <div class="metric-desc">Median end-to-end response latency</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ metrics.total_questions }}</div>
+            <div class="metric-label">Evaluation Questions</div>
+            <div class="metric-desc">Total questions in the evaluation set</div>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>ℹ️ About This Report</h2>
+    <p>
+        This page will display live evaluation results once the retriever and
+        answer modules are connected. Currently showing placeholder metrics for
+        UI demonstration purposes.
+    </p>
+</section>
+
+{% endblock %}
