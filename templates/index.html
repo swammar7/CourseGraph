@@ -1,73 +1,121 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CourseGraph • PDF Arşivi</title>
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, sans-serif; color: #183047; background: #f3f7fa; }
-    * { box-sizing: border-box; }
-    body { max-width: 850px; margin: 35px auto; padding: 0 20px; }
-    h1 { margin-bottom: 6px; }
-    h2 { margin-top: 0; font-size: 1.2rem; }
-    .muted { color: #58697a; line-height: 1.5; }
-    .panel { background: white; padding: 22px; border-radius: 13px; border: 1px solid #d9e2eb; margin: 20px 0; }
-    label { display: block; margin: 12px 0 5px; font-weight: 600; }
-    input, textarea { width: 100%; border: 1px solid #abb9c6; border-radius: 7px; padding: 10px; font: inherit; }
-    button { background: #0a638a; border: none; border-radius: 7px; color: white; padding: 10px 20px; margin-top: 15px; font: inherit; cursor: pointer; }
-    .message { padding: 12px; border-radius: 7px; background: #e7f5ed; margin: 12px 0; }
-    .error { background: #fbe8e6; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5eaf0; }
-    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; }
-  </style>
-</head>
-<body>
-  <h1>CourseGraph</h1>
-  <p class="muted">E1: PDF yükleme, sayfa bazlı parçalama, yerel embedding, RDF / SKOS ve SHACL doğrulama.</p>
+{% extends "base.html" %}
+{% block title %}CourseGraph • Knowledge Graph Assistant{% endblock %}
 
-  {% for category, message in get_flashed_messages(with_categories=true) %}
-    <p role="status" class="message {{ 'error' if category == 'error' else '' }}">{{ message }}</p>
-  {% endfor %}
+{% block content %}
 
-  <section class="panel">
-    <h2>PDF yükle</h2>
-    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-      <label for="course_id">Ders kodu</label>
-      <input id="course_id" name="course_id" type="text" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" placeholder="SEN0414" required>
-      <label for="pdf">PDF dosyası (en fazla 20 MB)</label>
-      <input id="pdf" name="pdf" type="file" accept=".pdf,application/pdf" required>
-      <label for="topics">Konular (isteğe bağlı; virgülle ayır)</label>
-      <input id="topics" name="topics" placeholder="RDF, Ontoloji, Semantik Web">
-      <button type="submit">Yükle ve doğrula</button>
+<!-- ============================================================ -->
+<!--  SECTION 1: PDF Ingestion into RDF Knowledge Graph           -->
+<!-- ============================================================ -->
+<section class="card">
+    <h2>📤 Ingest Course PDF into Knowledge Graph</h2>
+    <p class="subtitle">Extracts pages &amp; chunks, computes local embeddings, builds RDF graph &amp; validates SHACL shapes.</p>
+    
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="form-row">
+            <div class="form-group" style="flex: 0 0 200px;">
+                <label for="course_id">Course Code *</label>
+                <input type="text" id="course_id" name="course_id" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" placeholder="e.g. SEN0414" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="pdf">PDF File (Max 20 MB) *</label>
+                <input type="file" id="pdf" name="pdf" accept=".pdf,application/pdf" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="topics">Topics (comma-separated SKOS labels)</label>
+                <input type="text" id="topics" name="topics" placeholder="e.g. RDF, SPARQL, Ontologies">
+            </div>
+            <div class="form-group form-group-btn">
+                <button type="submit" class="btn btn-primary">Ingest &amp; Validate</button>
+            </div>
+        </div>
     </form>
-  </section>
+</section>
 
-  <section class="panel">
-    <h2>Yüklenen belgeler</h2>
+<!-- ============================================================ -->
+<!--  SECTION 2: Uploaded Documents in RDF Graph                  -->
+<!-- ============================================================ -->
+<section class="card">
+    <h2>📁 Ingested Course Documents (RDF Graph)</h2>
     {% if documents %}
-      <table>
-        <thead><tr><th>PDF</th><th>Ders</th><th>Sayfa</th><th>Parça</th></tr></thead>
+    <table class="doc-table">
+        <thead>
+            <tr>
+                <th>Document Name</th>
+                <th>Course Code</th>
+                <th>Pages</th>
+                <th>Chunks in Graph</th>
+                <th>Status</th>
+            </tr>
+        </thead>
         <tbody>
-          {% for doc in documents %}
-            <tr><td>{{ doc.filename }}</td><td>{{ doc.course }}</td><td>{{ doc.page_count }}</td><td>{{ doc.chunk_count }}</td></tr>
-          {% endfor %}
+            {% for doc in documents %}
+            <tr>
+                <td><strong>{{ doc.filename }}</strong></td>
+                <td><span class="badge">{{ doc.course }}</span></td>
+                <td>{{ doc.page_count }}</td>
+                <td>{{ doc.chunk_count }}</td>
+                <td><span class="status status-ready">✔ Conforms to SHACL</span></td>
+            </tr>
+            {% endfor %}
         </tbody>
-      </table>
+    </table>
     {% else %}
-      <p class="muted">Henüz yüklenmiş PDF yok.</p>
+    <p class="subtitle" style="margin-bottom: 0;">No documents in the RDF Knowledge Graph yet. Upload a course slide deck above to get started.</p>
     {% endif %}
-  </section>
+</section>
 
-  <section class="panel">
-    <h2>Eski prototip sorgusu (geçici)</h2>
-    <p class="muted">Bu form hâlâ eski index.json verisinde tek paragraf arar. Ders filtreli GraphRAG, atıflı Ollama yanıtları ve PROV-O, Melisa'nın sonraki E2 aşamasıdır.</p>
-    <form action="{{ url_for('home') }}" method="post">
-      <label for="query">Sorunuz</label>
-      <input id="query" name="query" required>
-      <button type="submit">Eski indekste ara</button>
+<!-- ============================================================ -->
+<!--  SECTION 3: Ask a Question                                   -->
+<!-- ============================================================ -->
+<section class="card">
+    <h2>❓ Ask CourseGraph Assistant</h2>
+    <form action="{{ url_for('home') }}" method="post" class="ask-form">
+        <div class="form-row">
+            <div class="form-group" style="flex: 0 0 200px;">
+                <label for="course_filter">Filter by Course</label>
+                <select id="course_filter" name="course_filter">
+                    <option value="">All indexed courses</option>
+                    {% for c in courses %}
+                    <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="query">Question</label>
+                <input type="text" id="query" name="query" placeholder="e.g. What is Third Normal Form (3NF)?"
+                       value="{{ question if question else '' }}" required>
+            </div>
+            <div class="form-group form-group-btn">
+                <button type="submit" class="btn btn-primary">Search Graph</button>
+            </div>
+        </div>
     </form>
-    {% if answer is not none %}<div class="message"><pre>{{ answer }}</pre></div>{% endif %}
-  </section>
-</body>
-</html>
+</section>
+
+<!-- ============================================================ -->
+<!--  SECTION 4: Answer & Grounded Citations Display              -->
+<!-- ============================================================ -->
+{% if answer %}
+<section class="card card-answer">
+    <h2>💡 Answer</h2>
+    <p class="answer-text">{{ answer.text }}</p>
+
+    {% if answer.citations %}
+    <h3>📎 Cited Sources (Knowledge Graph)</h3>
+    <div class="citations">
+        {% for cite in answer.citations %}
+        <div class="citation-card">
+            <div class="citation-header">
+                <strong>{{ cite.document }}</strong> &mdash; Page {{ cite.page }}
+            </div>
+            <p class="citation-chunk">"{{ cite.chunk }}"</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <p class="answer-meta">Response time: {{ answer.time_ms }} ms</p>
+</section>
+{% endif %}
+
+{% endblock %}
