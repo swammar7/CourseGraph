@@ -32,3 +32,37 @@ cg:ChunkShape a sh:NodeShape ;
 cg:TopicShape a sh:NodeShape ;
     sh:targetClass skos:Concept ;
     sh:property [ sh:path skos:prefLabel ; sh:minCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] .
+
+# --- E2: answer provenance shapes -----------------------------------------
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+cg:QuestionShape a sh:NodeShape ;
+    sh:targetClass cg:Question ;
+    sh:property [ sh:path cg:questionText ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path cg:askedForCourse ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Course ] .
+
+cg:AnswerShape a sh:NodeShape ;
+    sh:targetClass cg:Answer ;
+    sh:property [ sh:path cg:answerText ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] ;
+    sh:property [ sh:path cg:covered ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path cg:answersQuestion ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Question ] ;
+    sh:property [ sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:AnswerGeneration ] ;
+    sh:property [ sh:path prov:generatedAtTime ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path cg:hasCitation ; sh:maxCount 3 ; sh:class cg:Citation ] .
+
+cg:CitationShape a sh:NodeShape ;
+    sh:targetClass cg:Citation ;
+    sh:property [ sh:path cg:citesChunk ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Chunk ] ;
+    sh:property [ sh:path cg:citationNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:maxInclusive 3 ] ;
+    sh:property [ sh:path cg:similarityScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path cg:usedInAnswerText ; sh:maxCount 1 ; sh:datatype xsd:boolean ] .
+
+cg:AnswerGenerationShape a sh:NodeShape ;
+    sh:targetClass cg:AnswerGeneration ;
+    sh:property [ sh:path prov:used ; sh:minCount 1 ] ;
+    sh:property [ sh:path prov:wasAssociatedWith ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:LanguageModel ] ;
+    sh:property [ sh:path cg:responseTimeMs ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] .
+
+cg:LanguageModelShape a sh:NodeShape ;
+    sh:targetClass cg:LanguageModel ;
+    sh:property [ sh:path cg:modelName ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ] .
