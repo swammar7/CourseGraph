@@ -11,19 +11,21 @@ from __future__ import annotations
 
 from pathlib import Path
 import os
-import time
+import re
 
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+from flask import Flask, abort, flash, jsonify, redirect, render_template, request, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 
 from coursegraph.answer_service import AnswerService, OllamaClient
 from coursegraph.embeddings import LocalEmbedder
 from coursegraph.graph_store import GraphStore, GraphValidationError
 from coursegraph.pdf_processing import PdfProcessingError
+from coursegraph.provenance import ProvenanceError, ProvenanceRecorder
 from coursegraph.retriever import HybridRetriever
 
 
 BASE_DIR = Path(__file__).resolve().parent
+_DOCUMENT_KEY = re.compile(r"^[0-9a-f]{64}$")
 
 
 def create_app(config: dict | None = None, *, embedder=None) -> Flask:
@@ -37,6 +39,7 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         OLLAMA_MODEL=os.getenv("COURSEGRAPH_OLLAMA_MODEL", "qwen2.5:3b"),
         OLLAMA_HOST=os.getenv("COURSEGRAPH_OLLAMA_HOST", "http://127.0.0.1:11434"),
         OLLAMA_TIMEOUT=60.0,
+        PROVENANCE_PATH=None,
     )
     if config:
         app.config.update(config)
@@ -53,6 +56,7 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         ),
     )
     app.extensions["answer_service"] = answer_service
+    app.extensions["provenance"] = ProvenanceRecorder(store, app.config["PROVENANCE_PATH"])
 
     def answer_query(query: str, course_filter: str | None = None) -> dict:
         """E2: hybrid retrieval (SPARQL + cosine top-3) and a cited local-LLM answer."""
@@ -64,7 +68,20 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         except (ValueError, RuntimeError) as exc:
             return {"text": f"The question could not be answered: {exc}",
                     "covered": False, "error": str(exc), "citations": [], "time_ms": 0}
-        return result.to_view()
+
+        # PROV-O record; a failed record is logged but never hides the answer.
+        try:
+            app.extensions["provenance"].record(result)
+        except (ProvenanceError, OSError) as exc:
+            app.logger.warning("Answer provenance was not saved: %s", exc)
+
+        view = result.to_view()
+        for cite_view, cite in zip(view["citations"], result.citations):
+            document_key = cite["document_uri"].rsplit("/", 1)[-1]
+            cite_view["pdf_url"] = (
+                url_for("document_pdf", document_key=document_key) + f"#page={cite['page_number']}"
+            )
+        return view
 
     @app.route("/", methods=["GET", "POST"])
     def home():
@@ -87,6 +104,16 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
             answer=answer,
             question=question,
             selected_course=selected_course,
+        )
+
+    @app.route("/documents/<document_key>.pdf", methods=["GET"])
+    def document_pdf(document_key: str):
+        """Serves an uploaded PDF so a citation can open it at the cited page."""
+        if not _DOCUMENT_KEY.fullmatch(document_key):
+            abort(404)
+        return send_from_directory(
+            Path(app.config["UPLOAD_FOLDER"]).resolve(), f"{document_key}.pdf",
+            mimetype="application/pdf",
         )
 
     @app.route("/report", methods=["GET"])
