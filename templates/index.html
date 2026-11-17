@@ -99,6 +99,9 @@
 <section class="card card-answer">
     <h2>💡 Answer</h2>
     <p class="answer-text">{{ answer.text }}</p>
+    {% if answer.error %}
+    <p class="answer-meta">&#9888; {{ answer.error }}</p>
+    {% endif %}
 
     {% if answer.citations %}
     <h3>📎 Cited Sources (Knowledge Graph)</h3>
@@ -106,7 +109,10 @@
         {% for cite in answer.citations %}
         <div class="citation-card">
             <div class="citation-header">
-                <strong>{{ cite.document }}</strong> &mdash; Page {{ cite.page }}
+                <strong>[{{ cite.number }}] {{ cite.document }}</strong> &mdash; Page {{ cite.page }}
+                {% if cite.pdf_url %}
+                <a class="citation-link" href="{{ cite.pdf_url }}" target="_blank" rel="noopener">Open page &#8599;</a>
+                {% endif %}
             </div>
             <p class="citation-chunk">"{{ cite.chunk }}"</p>
         </div>
