@@ -3,26 +3,29 @@
 Integrates:
 - Real PDF ingestion, chunking, RDF graph store & SHACL validation (E1 - Ahmet)
 - Modern UI templates with base layout, CSS styling & flash alerts (Ammar)
-- Course filtering and query interface ready for E2 hybrid retriever (Melisa)
+- E2 hybrid retriever + Ollama answer service with page citations (Melisa)
 - Quality evaluation dashboard (/report) with DoD metrics (Ammar)
 - REST APIs (/api/upload, /api/documents, /api/courses/<id>/chunks)
 """
 from __future__ import annotations
 
 from pathlib import Path
-import json
 import os
-import time
+import re
 
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+from flask import Flask, abort, flash, jsonify, redirect, render_template, request, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 
+from coursegraph.answer_service import AnswerService, OllamaClient
 from coursegraph.embeddings import LocalEmbedder
 from coursegraph.graph_store import GraphStore, GraphValidationError
 from coursegraph.pdf_processing import PdfProcessingError
+from coursegraph.provenance import ProvenanceError, ProvenanceRecorder
+from coursegraph.retriever import HybridRetriever
 
 
 BASE_DIR = Path(__file__).resolve().parent
+_DOCUMENT_KEY = re.compile(r"^[0-9a-f]{64}$")
 
 
 def create_app(config: dict | None = None, *, embedder=None) -> Flask:
@@ -33,7 +36,10 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         GRAPH_PATH=str(BASE_DIR / "data" / "graph.ttl"),
         UPLOAD_FOLDER=str(BASE_DIR / "data" / "uploads"),
         MODEL_PATH=str(BASE_DIR / "models" / "all-MiniLM-L6-v2"),
-        LEGACY_INDEX=str(BASE_DIR / "index.json"),
+        OLLAMA_MODEL=os.getenv("COURSEGRAPH_OLLAMA_MODEL", "qwen2.5:3b"),
+        OLLAMA_HOST=os.getenv("COURSEGRAPH_OLLAMA_HOST", "http://127.0.0.1:11434"),
+        OLLAMA_TIMEOUT=60.0,
+        PROVENANCE_PATH=None,
     )
     if config:
         app.config.update(config)
@@ -41,89 +47,41 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
     local_embedder = embedder or LocalEmbedder(app.config["MODEL_PATH"])
     store = GraphStore(app.config["GRAPH_PATH"], app.config["UPLOAD_FOLDER"])
 
+    retriever = HybridRetriever(store, local_embedder)
+    answer_service = AnswerService(
+        retriever,
+        OllamaClient(
+            model=app.config["OLLAMA_MODEL"], host=app.config["OLLAMA_HOST"],
+            timeout=app.config["OLLAMA_TIMEOUT"],
+        ),
+    )
+    app.extensions["answer_service"] = answer_service
+    app.extensions["provenance"] = ProvenanceRecorder(store, app.config["PROVENANCE_PATH"])
+
     def answer_query(query: str, course_filter: str | None = None) -> dict:
-        """Query answer handler.
-        
-        Currently performs semantic search against the index/graph, formatted
-        with citation details (Document, Page, Chunk snippet, latency) for the UI.
-        Ready to be wired to Melisa's Ollama AnswerService in Phase 2.
-        """
-        start_time = time.time()
-        import numpy as np
-
-        index_path = Path(app.config["LEGACY_INDEX"])
-        if not index_path.is_file():
-            # If no legacy index, check if chunks are available in RDF store
-            if course_filter:
-                try:
-                    rdf_chunks = store.get_course_chunks(course_filter)
-                    if rdf_chunks:
-                        return {
-                            "text": f"Found {len(rdf_chunks)} chunks for {course_filter} in the RDF Knowledge Graph. Ollama answer generation is queued for Melisa's E2 deliverable.",
-                            "citations": [
-                                {
-                                    "document": c["filename"],
-                                    "page": c["page_number"],
-                                    "chunk": c["text"][:200] + ("..." if len(c["text"]) > 200 else "")
-                                }
-                                for c in rdf_chunks[:3]
-                            ],
-                            "time_ms": int((time.time() - start_time) * 1000),
-                        }
-                except Exception:
-                    pass
-            return {
-                "text": "The knowledge base does not cover this question yet, or no documents have been indexed for the selected course.",
-                "citations": [],
-                "time_ms": int((time.time() - start_time) * 1000),
-            }
-
-        with index_path.open(encoding="utf-8") as infile:
-            index = json.load(infile)
-
-        chunks, vectors = index.get("chunks", []), index.get("embeddings", [])
-        if not chunks or len(chunks) != len(vectors):
-            return {
-                "text": "Index is empty or corrupted.",
-                "citations": [],
-                "time_ms": int((time.time() - start_time) * 1000),
-            }
-
+        """E2: hybrid retrieval (SPARQL + cosine top-3) and a cited local-LLM answer."""
+        if not course_filter:
+            return {"text": "Please choose a course before asking a question.",
+                    "covered": False, "error": None, "citations": [], "time_ms": 0}
         try:
-            query_vector = np.asarray(local_embedder.encode([query])[0], dtype=float)
-            vectors = np.asarray(vectors, dtype=float)
-            if vectors.ndim != 2 or vectors.shape[1] != len(query_vector):
-                return {
-                    "text": "Embedding vector dimensions do not match.",
-                    "citations": [],
-                    "time_ms": int((time.time() - start_time) * 1000),
-                }
+            result = app.extensions["answer_service"].answer(query, course_filter)
+        except (ValueError, RuntimeError) as exc:
+            return {"text": f"The question could not be answered: {exc}",
+                    "covered": False, "error": str(exc), "citations": [], "time_ms": 0}
 
-            norms = np.linalg.norm(vectors, axis=1) * np.linalg.norm(query_vector)
-            similarities = np.divide(
-                vectors @ query_vector, norms, out=np.zeros(len(chunks)), where=norms != 0
+        # PROV-O record; a failed record is logged but never hides the answer.
+        try:
+            app.extensions["provenance"].record(result)
+        except (ProvenanceError, OSError) as exc:
+            app.logger.warning("Answer provenance was not saved: %s", exc)
+
+        view = result.to_view()
+        for cite_view, cite in zip(view["citations"], result.citations):
+            document_key = cite["document_uri"].rsplit("/", 1)[-1]
+            cite_view["pdf_url"] = (
+                url_for("document_pdf", document_key=document_key) + f"#page={cite['page_number']}"
             )
-            top_idx = int(np.argmax(similarities))
-            top_chunk = chunks[top_idx]
-
-            # In Phase 2: Melisa attaches exact citations and PROV-O records
-            return {
-                "text": top_chunk,
-                "citations": [
-                    {
-                        "document": "CourseDocument.pdf",
-                        "page": 1,
-                        "chunk": top_chunk[:160] + "..." if len(top_chunk) > 160 else top_chunk,
-                    }
-                ],
-                "time_ms": int((time.time() - start_time) * 1000),
-            }
-        except Exception as exc:
-            return {
-                "text": f"Search could not be completed: {exc}",
-                "citations": [],
-                "time_ms": int((time.time() - start_time) * 1000),
-            }
+        return view
 
     @app.route("/", methods=["GET", "POST"])
     def home():
@@ -146,6 +104,16 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
             answer=answer,
             question=question,
             selected_course=selected_course,
+        )
+
+    @app.route("/documents/<document_key>.pdf", methods=["GET"])
+    def document_pdf(document_key: str):
+        """Serves an uploaded PDF so a citation can open it at the cited page."""
+        if not _DOCUMENT_KEY.fullmatch(document_key):
+            abort(404)
+        return send_from_directory(
+            Path(app.config["UPLOAD_FOLDER"]).resolve(), f"{document_key}.pdf",
+            mimetype="application/pdf",
         )
 
     @app.route("/report", methods=["GET"])

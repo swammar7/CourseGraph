@@ -26,3 +26,35 @@ cg:chunkPageNumber a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xs
 cg:chunkIndex a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xsd:nonNegativeInteger .
 cg:text a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:range xsd:string .
 cg:embeddingJson a owl:DatatypeProperty ; rdfs:domain cg:Chunk ; rdfs:comment "JSON array of local embedding floats"@en ; rdfs:range xsd:string .
+
+# --- E2: questions, answers and citations with PROV-O provenance ---------
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+cg:Question a owl:Class ; rdfs:subClassOf prov:Entity ;
+    rdfs:label "Student question"@en .
+cg:Answer a owl:Class ; rdfs:subClassOf prov:Entity ;
+    rdfs:label "Generated answer"@en ;
+    rdfs:comment "A reply produced from at most three retrieved chunks; a no-source reply has no citations."@en .
+cg:Citation a owl:Class ;
+    rdfs:label "Citation"@en ;
+    rdfs:comment "Links an answer to one retrieved chunk and its page."@en .
+cg:AnswerGeneration a owl:Class ; rdfs:subClassOf prov:Activity ;
+    rdfs:label "Answer generation run"@en .
+cg:LanguageModel a owl:Class ; rdfs:subClassOf prov:SoftwareAgent ;
+    rdfs:label "Local language model"@en .
+
+cg:askedForCourse a owl:ObjectProperty ; rdfs:domain cg:Question ; rdfs:range cg:Course .
+cg:answersQuestion a owl:ObjectProperty ; rdfs:domain cg:Answer ; rdfs:range cg:Question .
+cg:hasCitation a owl:ObjectProperty ; rdfs:domain cg:Answer ; rdfs:range cg:Citation .
+cg:citesChunk a owl:ObjectProperty ; rdfs:domain cg:Citation ; rdfs:range cg:Chunk .
+
+cg:questionText a owl:DatatypeProperty ; rdfs:domain cg:Question ; rdfs:range xsd:string .
+cg:answerText a owl:DatatypeProperty ; rdfs:domain cg:Answer ; rdfs:range xsd:string .
+cg:covered a owl:DatatypeProperty ; rdfs:domain cg:Answer ; rdfs:range xsd:boolean ;
+    rdfs:comment "False when the documents do not cover the question."@en .
+cg:citationNumber a owl:DatatypeProperty ; rdfs:domain cg:Citation ; rdfs:range xsd:positiveInteger .
+cg:similarityScore a owl:DatatypeProperty ; rdfs:domain cg:Citation ; rdfs:range xsd:decimal .
+cg:usedInAnswerText a owl:DatatypeProperty ; rdfs:domain cg:Citation ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when the answer text refers to this citation number."@en .
+cg:modelName a owl:DatatypeProperty ; rdfs:domain cg:LanguageModel ; rdfs:range xsd:string .
+cg:responseTimeMs a owl:DatatypeProperty ; rdfs:domain cg:AnswerGeneration ; rdfs:range xsd:nonNegativeInteger .
