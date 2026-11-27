@@ -10,6 +10,7 @@ Integrates:
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import os
 import re
 
@@ -40,6 +41,7 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         OLLAMA_HOST=os.getenv("COURSEGRAPH_OLLAMA_HOST", "http://127.0.0.1:11434"),
         OLLAMA_TIMEOUT=60.0,
         PROVENANCE_PATH=None,
+        EVAL_RESULTS=str(BASE_DIR / "eval" / "results.json"),
     )
     if config:
         app.config.update(config)
@@ -118,17 +120,11 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
 
     @app.route("/report", methods=["GET"])
     def report():
-        """Quality Report page displaying Sprint / DoD metrics.
-        
-        Metrics: Recall@3, Citation Accuracy, Median Answer Time.
+        """Quality report from eval/results.json, written by scripts/evaluate.py.
+
+        No placeholder numbers: without a results file the page says so.
         """
-        metrics = {
-            "recall_at_3": 0.85,
-            "citation_accuracy": 0.88,
-            "median_time_ms": 2150,
-            "total_questions": 50,
-        }
-        return render_template("report.html", metrics=metrics)
+        return render_template("report.html", report=load_evaluation(Path(app.config["EVAL_RESULTS"])))
 
     @app.route("/api/documents", methods=["GET"])
     def list_documents():
@@ -218,6 +214,41 @@ def create_app(config: dict | None = None, *, embedder=None) -> Flask:
         return redirect(url_for("home"))
 
     return app
+
+
+def load_evaluation(path: Path) -> dict | None:
+    """Reads the evaluation results and adds per-course recall and the missed questions."""
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        summary, rows = data["summary"], data["questions"]
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        return {"error": f"{path.name} could not be read: {exc}"}
+
+    courses = {}
+    for row in rows:
+        course = courses.setdefault(row["course"], {"course": row["course"], "answerable": 0, "hits": 0,
+                                                     "unanswerable": 0, "rejected": 0})
+        if row.get("answerable", True):
+            course["answerable"] += 1
+            course["hits"] += bool(row.get("hit_at_3"))
+        else:
+            course["unanswerable"] += 1
+            course["rejected"] += not row.get("covered")
+    for course in courses.values():
+        course["recall"] = course["hits"] / course["answerable"] if course["answerable"] else None
+
+    misses = [r for r in rows if r.get("answerable", True) and not r.get("hit_at_3")]
+    false_answers = [r for r in rows if not r.get("answerable", True) and r.get("covered")]
+    return {
+        "summary": summary,
+        "settings": data.get("settings", {}),
+        "generated_at": data.get("generated_at"),
+        "courses": sorted(courses.values(), key=lambda c: c["course"]),
+        "misses": misses,
+        "false_answers": false_answers,
+    }
 
 
 app = create_app()
