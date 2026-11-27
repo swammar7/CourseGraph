@@ -1,0 +1,644 @@
+{
+  "description": "CourseGraph E2 evaluation set: 45 answerable questions (15 per course) and 5 questions the slides do not cover. Page numbers refer to the PDFs listed below, as extracted by coursegraph.pdf_processing.",
+  "pdfs": [
+    {
+      "course": "COM7093",
+      "filename": "econ_bcr.pdf",
+      "title": "Evaluating Projects with Benefit/Cost Ratio Method (Economics for Engineers)",
+      "pages": 28
+    },
+    {
+      "course": "SEN0414",
+      "filename": "sen0414_ch09.pdf",
+      "title": "Chapter 9 Regular Expressions (Advanced Programming)",
+      "pages": 48
+    },
+    {
+      "course": "SEN5016",
+      "filename": "sen5016_07.pdf",
+      "title": "Week 07 Non-functional Properties, Tactics and Trade-offs (Software Architecture)",
+      "pages": 45
+    }
+  ],
+  "questions": [
+    {
+      "id": "econ-01",
+      "course": "COM7093",
+      "question": "What is the conventional benefit/cost ratio formula using present worth?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 2
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-02",
+      "course": "COM7093",
+      "question": "When is a project acceptable according to its B/C ratio?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 2
+        },
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 4
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-03",
+      "course": "COM7093",
+      "question": "How is the modified B/C ratio calculated with present worth?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 3
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-04",
+      "course": "COM7093",
+      "question": "What is the capital recovery amount CR in the annual worth B/C ratio?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 4
+        },
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 5
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-05",
+      "course": "COM7093",
+      "question": "How does the salvage value enter the conventional B/C ratio with present worth?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 6
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-06",
+      "course": "COM7093",
+      "question": "How much does the farmland for the airport runway extension cost?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 8
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-07",
+      "course": "COM7093",
+      "question": "What is the total initial investment of the airport runway extension project?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 9
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-08",
+      "course": "COM7093",
+      "question": "What is the conventional B/C ratio of the runway extension project?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 10
+        },
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 11
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-09",
+      "course": "COM7093",
+      "question": "Do the conventional and modified B/C methods always lead to the same conclusion?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 12
+        },
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 13
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-10",
+      "course": "COM7093",
+      "question": "What are disbenefits in a public-sector project?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 14
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-11",
+      "course": "COM7093",
+      "question": "How does the noise pollution disbenefit change the B/C ratio of the airport project?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 16
+        },
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 17
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-12",
+      "course": "COM7093",
+      "question": "Should the maintenance cost saving of the new bridge be treated as a reduced cost or an increased benefit?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 19
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-13",
+      "course": "COM7093",
+      "question": "Does maximizing the B/C ratio guarantee that the best mutually exclusive project is selected?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 20
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-14",
+      "course": "COM7093",
+      "question": "Which of the three public works projects A, B and C is recommended?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 24
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "econ-15",
+      "course": "COM7093",
+      "question": "What are the criticisms and shortcomings of the benefit/cost ratio method?",
+      "expected": [
+        {
+          "filename": "econ_bcr.pdf",
+          "page": 27
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-01",
+      "course": "SEN5016",
+      "question": "What is a non-functional property of a software system?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 2
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-02",
+      "course": "SEN5016",
+      "question": "How should software components be designed for efficiency?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 7
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-03",
+      "course": "SEN5016",
+      "question": "What guidelines apply to software connectors and efficiency?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 9
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-04",
+      "course": "SEN5016",
+      "question": "What is the IEEE definition of complexity?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 12
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-05",
+      "course": "SEN5016",
+      "question": "How should software components be designed to reduce complexity?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 13
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-06",
+      "course": "SEN5016",
+      "question": "What is the definition of scalability and heterogeneity?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 16
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-07",
+      "course": "SEN5016",
+      "question": "What is portability of a software system?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 16
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-08",
+      "course": "SEN5016",
+      "question": "What is adaptability of a software system?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 19
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-09",
+      "course": "SEN5016",
+      "question": "What is the difference between reliability and availability?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 23
+        },
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 34
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-10",
+      "course": "SEN5016",
+      "question": "How can architectural configurations improve dependability?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 24
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-11",
+      "course": "SEN5016",
+      "question": "What are the parts of a quality attribute scenario?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 25
+        },
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 26
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-12",
+      "course": "SEN5016",
+      "question": "What is an architectural tactic?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 28
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-13",
+      "course": "SEN5016",
+      "question": "What is the goal of performance tactics?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 31
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-14",
+      "course": "SEN5016",
+      "question": "What is the heartbeat tactic for detecting faults?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 37
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "arch-15",
+      "course": "SEN5016",
+      "question": "What is graceful degradation when recovering from faults?",
+      "expected": [
+        {
+          "filename": "sen5016_07.pdf",
+          "page": 38
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-01",
+      "course": "SEN0414",
+      "question": "What does re.compile return?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 9
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-02",
+      "course": "SEN0414",
+      "question": "What does search return when the pattern is not found?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 4
+        },
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 9
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-03",
+      "course": "SEN0414",
+      "question": "What is the difference between match, search and fullmatch?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 10
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-04",
+      "course": "SEN0414",
+      "question": "Who published the search algorithm that compiles the pattern first, and when?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 7
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-05",
+      "course": "SEN0414",
+      "question": "How are groups numbered in a regular expression?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 14
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-06",
+      "course": "SEN0414",
+      "question": "How do named groups work and what does groupdict return?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 16
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-07",
+      "course": "SEN0414",
+      "question": "What does a caret inside a character set do?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 18
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-08",
+      "course": "SEN0414",
+      "question": "What do the shorthand classes \\d, \\w and \\s match?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 19
+        },
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 13
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-09",
+      "course": "SEN0414",
+      "question": "What is the difference between greedy and lazy matching?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 25
+        },
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 22
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-10",
+      "course": "SEN0414",
+      "question": "What does the \\b word boundary match?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 27
+        },
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 26
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-11",
+      "course": "SEN0414",
+      "question": "What is a look-ahead assertion in a regular expression?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 28
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-12",
+      "course": "SEN0414",
+      "question": "What does findall return when the pattern has groups?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 31
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-13",
+      "course": "SEN0414",
+      "question": "How can re.sub use a function as the replacement?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 34
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-14",
+      "course": "SEN0414",
+      "question": "What does the re.DOTALL flag do?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 35
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "regex-15",
+      "course": "SEN0414",
+      "question": "How does the strong password check work with regular expressions?",
+      "expected": [
+        {
+          "filename": "sen0414_ch09.pdf",
+          "page": 42
+        }
+      ],
+      "answerable": true
+    },
+    {
+      "id": "none-01",
+      "course": "COM7093",
+      "question": "How do you calculate the internal rate of return (IRR) of a project?",
+      "expected": [],
+      "answerable": false
+    },
+    {
+      "id": "none-02",
+      "course": "COM7093",
+      "question": "What is straight-line depreciation?",
+      "expected": [],
+      "answerable": false
+    },
+    {
+      "id": "none-03",
+      "course": "SEN5016",
+      "question": "What are the seven layers of the OSI network model?",
+      "expected": [],
+      "answerable": false
+    },
+    {
+      "id": "none-04",
+      "course": "SEN0414",
+      "question": "How do you read an Excel file with openpyxl?",
+      "expected": [],
+      "answerable": false
+    },
+    {
+      "id": "none-05",
+      "course": "SEN0414",
+      "question": "What is a Python decorator and how do you write one?",
+      "expected": [],
+      "answerable": false
+    }
+  ]
+}
