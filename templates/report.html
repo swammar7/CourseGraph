@@ -1,43 +1,150 @@
 {% extends "base.html" %}
 {% block title %}CourseGraph – Quality Report{% endblock %}
 
-{% block content %}
+{% macro pct(value) -%}
+{{ "%.0f" | format(value * 100) ~ "%" if value is not none else "–" }}
+{%- endmacro %}
 
+{% macro target(met, label) -%}
+<div class="target {{ 'target-met' if met else 'target-missed' }}">{{ '✔' if met else '✘' }} {{ label }}</div>
+{%- endmacro %}
+
+{% block content %}
+<style>
+    .target { display: inline-block; margin-top: 0.5rem; padding: 0.1rem 0.55rem; border-radius: 999px;
+              font-size: 0.75rem; font-weight: 600; }
+    .target-met { background: #e6f6ea; color: #1e7b34; }
+    .target-missed { background: #fdecee; color: #b02a37; }
+    .target-pending { background: #eef0f4; color: #666; }
+    .bar { background: #e8ecf8; border-radius: 4px; height: 10px; min-width: 120px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; background: #4361ee; }
+    .report-meta { font-size: 0.85rem; color: #555; }
+    .report-meta code, .empty-state code { background: #f0f2f5; padding: 0.1rem 0.35rem; border-radius: 4px; }
+    .empty-state pre { background: #1a1a2e; color: #e8ecf8; padding: 0.9rem 1rem; border-radius: 8px;
+                       font-size: 0.82rem; overflow-x: auto; margin-top: 0.75rem; }
+    .miss-question { max-width: 420px; }
+</style>
+
+{% if report is none %}
+<section class="card empty-state">
+    <h2>📊 Quality Report</h2>
+    <p class="subtitle">No evaluation has been run yet, so there are no measured results to show.</p>
+    <div class="metrics-grid" style="margin-bottom:1.25rem">
+        {% for label, desc in [("Recall@3", "Expected page is among the 3 retrieved chunks"),
+                               ("Citation Accuracy", "Cited pages support the answer (two judges)"),
+                               ("Median Answer Time", "End-to-end time, target: 90% under 10 s"),
+                               ("\"No Source\" Replies", "Questions outside the slides answered honestly")] %}
+        <div class="metric-card">
+            <div class="metric-value">–</div>
+            <div class="metric-label">{{ label }}</div>
+            <div class="metric-desc">{{ desc }}</div>
+            <div class="target target-pending">not measured yet</div>
+        </div>
+        {% endfor %}
+    </div>
+    <p>Run the 50-question evaluation from the repository root (Ollama must be running):</p>
+    <pre>python scripts/evaluate.py --pdf COM7093=eval/pdfs/econ_bcr.pdf --pdf SEN0414=eval/pdfs/sen0414_ch09.pdf --pdf SEN5016=eval/pdfs/sen5016_07.pdf</pre>
+    <p class="report-meta" style="margin-top:0.75rem">The script writes <code>eval/results.json</code>, which this page reads.</p>
+</section>
+
+{% elif report.error %}
 <section class="card">
     <h2>📊 Quality Report</h2>
-    <p class="subtitle">Evaluation results from the 50-question test set.</p>
+    <p class="status-error">{{ report.error }}</p>
+</section>
+
+{% else %}
+{% set s = report.summary %}
+<section class="card">
+    <h2>📊 Quality Report</h2>
+    <p class="subtitle">Measured on {{ s.total_questions }} questions from {{ report.courses | length }} courses
+        ({{ s.answerable_questions }} answerable, {{ s.unanswerable_questions }} not covered by the slides).</p>
 
     <div class="metrics-grid">
         <div class="metric-card">
-            <div class="metric-value">{{ "%.0f" | format(metrics.recall_at_3 * 100) }}%</div>
+            <div class="metric-value">{{ pct(s.recall_at_3) }}</div>
             <div class="metric-label">Recall@3</div>
-            <div class="metric-desc">Share of questions whose expected page is in the top 3 retrieved chunks</div>
+            <div class="metric-desc">Expected page is among the 3 retrieved chunks</div>
+            {{ target(s.targets_met.recall_at_3, "target ≥ 80%") }}
         </div>
         <div class="metric-card">
-            <div class="metric-value">{{ "%.0f" | format(metrics.citation_accuracy * 100) }}%</div>
+            <div class="metric-value">{{ pct(s.citation_accuracy) }}</div>
             <div class="metric-label">Citation Accuracy</div>
-            <div class="metric-desc">Share of answers where cited pages support the answer</div>
+            <div class="metric-desc">Cited pages support the answer (two judges, {{ s.judged_answers }} answers)</div>
+            {% if s.citation_accuracy is none %}
+            <div class="target target-pending">not judged yet</div>
+            {% else %}
+            {{ target(s.targets_met.citation_accuracy, "target ≥ 80%") }}
+            {% endif %}
         </div>
         <div class="metric-card">
-            <div class="metric-value">{{ metrics.median_time_ms }} ms</div>
-            <div class="metric-label">Median Answer Time</div>
-            <div class="metric-desc">Median end-to-end response latency</div>
+            <div class="metric-value">{{ pct(s.share_under_10s) }}</div>
+            <div class="metric-label">Answers Under 10 s</div>
+            <div class="metric-desc">Median {{ s.median_time_ms }} ms · 90th percentile {{ s.p90_time_ms }} ms</div>
+            {{ target(s.targets_met.share_under_10s, "target ≥ 90%") }}
         </div>
         <div class="metric-card">
-            <div class="metric-value">{{ metrics.total_questions }}</div>
-            <div class="metric-label">Evaluation Questions</div>
-            <div class="metric-desc">Total questions in the evaluation set</div>
+            <div class="metric-value">{{ pct(s.rejection_accuracy) }}</div>
+            <div class="metric-label">"No Source" Replies</div>
+            <div class="metric-desc">Questions outside the slides answered with "no source found"</div>
         </div>
     </div>
 </section>
 
 <section class="card">
-    <h2>ℹ️ About This Report</h2>
-    <p>
-        This page will display live evaluation results once the retriever and
-        answer modules are connected. Currently showing placeholder metrics for
-        UI demonstration purposes.
-    </p>
+    <h2>📚 Results by Course</h2>
+    <table class="doc-table">
+        <thead>
+            <tr><th>Course</th><th>Recall@3</th><th></th><th>Found</th><th>"No source" replies</th></tr>
+        </thead>
+        <tbody>
+            {% for c in report.courses %}
+            <tr>
+                <td><span class="badge">{{ c.course }}</span></td>
+                <td>{{ pct(c.recall) }}</td>
+                <td><div class="bar"><span style="width: {{ ((c.recall or 0) * 100) | round(1) }}%"></span></div></td>
+                <td>{{ c.hits }} / {{ c.answerable }}</td>
+                <td>{% if c.unanswerable %}{{ c.rejected }} / {{ c.unanswerable }}{% else %}–{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </section>
 
+<section class="card">
+    <h2>🔍 Questions Where the Expected Page Was Missed ({{ report.misses | length }})</h2>
+    {% if report.misses %}
+    <table class="doc-table">
+        <thead><tr><th>ID</th><th>Question</th><th>Expected</th><th>Retrieved (score)</th></tr></thead>
+        <tbody>
+            {% for r in report.misses %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td class="miss-question">{{ r.question }}</td>
+                <td>{{ r.expected | join(", ") }}</td>
+                <td>{{ r.retrieved | join(", ") if r.retrieved else "no source" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="status-ready">Every answerable question found its expected page in the top 3.</p>
+    {% endif %}
+    {% if report.false_answers %}
+    <p class="report-meta" style="margin-top:1rem">Answered although the slides do not cover them:
+        {% for r in report.false_answers %}<code>{{ r.id }}</code>{{ ", " if not loop.last }}{% endfor %}</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>ℹ️ How These Numbers Were Measured</h2>
+    <p class="report-meta">
+        Generated {{ report.generated_at or "–" }} by <code>scripts/evaluate.py</code> ·
+        model <code>{{ report.settings.model or "retrieval only" }}</code> ·
+        embeddings <code>{{ report.settings.embedding_model or "–" }}</code> ·
+        top-{{ report.settings.top_k or 3 }}, similarity threshold {{ report.settings.threshold }} ·
+        {{ s.llm_errors }} model errors
+    </p>
+</section>
+{% endif %}
 {% endblock %}
